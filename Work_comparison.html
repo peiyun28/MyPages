@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作機會</title>
+    <!-- Load Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for better Chinese display and clean aesthetic */
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #f7f9fc;
+        }
+        .card-shadow {
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+        }
+        .starlux-bg {
+            background-color: #1a2a47; /* Darker blue/grey for StarLux theme */
+            color: white;
+        }
+        .kaixuan-bg {
+            background-color: #fde68a; /* Bright yellow for Kaixuan/Education theme */
+            color: #1f2937;
+        }
+        /* 確保在小螢幕上，內部的 padding 和字體大小合適 */
+        @media (max-width: 640px) {
+            .starlux-bg .p-6, .kaixuan-bg .p-6 {
+                padding: 1.5rem; /* 保持一致的間距 */
+            }
+            .text-3xl { font-size: 1.75rem; /* 標題在手機上略小一點 */ }
+            .text-xl { font-size: 1.125rem; }
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 text-center mb-6">
+            工作機會比較
+        </h1>
+        <p class="text-xl text-gray-600 text-center mb-12">
+            比較兩份工作的薪資結構、工時細節與收入穩定性
+        </p>
+
+        <!-- 比較圖卡區塊 (Responsive Layout: Stacks on mobile, 2 columns on large screens) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            
+            <!-- StarLux -->
+            <div class="card-shadow rounded-2xl overflow-hidden starlux-bg">
+                <div class="p-6 sm:p-8">
+                    <h2 class="text-3xl font-bold mb-4">星宇航空地勤</h2>
+                    <p class="text-lg mb-4 opacity-80">
+                        地勤客艙清潔等相關業務及其他指派任務
+                    </p>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center border-b border-white/20 pb-2">
+                            <span class="font-semibold text-xl">月薪</span>
+                            <span class="text-3xl font-extrabold text-yellow-300">NT$40,000</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-2">
+                            <span>本薪</span>
+                            <span>NT$31,000</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>交通津貼</span>
+                            <span>NT$1,000</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>勤務津貼
+                                <p class="text-sm opacity-70 mb-4">
+                                    實際執行現場輪班工作時核發，另核發夜班津貼、交通補助及餐費補助。
+                                </p>
+                            </span>
+                            <span>NT$5,000</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>全勤獎金
+                                <p class="text-sm opacity-70 mb-4">
+                                    當月申請事/病假合計達 3 次(含)或總時數達 24 小時(含)以上，或有曠職紀錄者，全額扣減！
+                                </p>
+                            </span>
+                            <span>NT$3,000</span>
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mt-8 mb-3 border-t border-white/20 pt-4">福利與風險</h3>
+                    <p class="text-sm opacity-70 mb-4">
+                        採用「做四休二」排班，每日工時約 10 小時（含加班工時）
+                        <br>
+                        <br>1. 特休：以週年制計算特休，日後依勞基法與公司管理規章辦理
+                        <br>2. 員工優待機票、免費午膳、員工健檢、企業補助、生日禮金、三節禮金、保險與退休計劃
+                        <br>3. 勞健保/勞退：自僱用日期加保至星宇航空公司
+                        <br>4. 成長空間：依賴公司調薪升遷，待久後可進行內轉考試/面試
+                        <br>
+                    </p>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>員工優待機票福利是否會一直存在？</li>
+                        <li>每月加班工時：約 40 小時</li>
+                        <li>住宿問題：須在桃園租屋，每月約扣除 1 萬的費用</li>
+                        <br>
+                        <span class="font-bold text-yellow-300">結論：<br></span>也許 NT$50,000（含加班）是有可能的，每月固定須付出約 40 小時的額外加班工時
+                    </ul>
+
+                </div>
+            </div>
+
+            <!-- 開瑄國小 -->
+            <div class="card-shadow rounded-2xl overflow-hidden kaixuan-bg">
+                 <div class="p-6 sm:p-8">
+                    <h2 class="text-3xl font-bold mb-4">開瑄國小</h2>
+                    <p class="text-lg mb-4 text-gray-700">
+                        羽球專業 & 興趣，且有贊助商
+                    </p>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center border-b border-gray-400 pb-2">
+                            <span class="font-semibold text-xl text-gray-800">月薪</span>
+                            <span class="text-3xl font-extrabold text-red-600">約 NT$40,314 ~ NT$80,253</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-2">
+                            <span>最低收入 (6月)</span>
+                            <span>NT$ 40,314</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>全年平均月收入</span>
+                            <span class="font-bold">NT$ 52,600</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>最高收入 (7月)</span>
+                            <span>NT$ 80,253</span>
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mt-8 mb-3 border-t border-gray-400 pt-4">福利與風險</h3>
+                    <p class="text-sm text-gray-700 mb-4">
+                        收入、排課量受學校行事曆影響，但因此休假彈性大
+                        <br>
+                        <br>1. 教師節獎金、三節禮品
+                        <br>2. 住家中，無需負擔住宿費用
+                    </p>
+                    <ul class="list-disc list-inside space-y-1 text-sm text-gray-700">
+                        <li>是否會因招募其他更年輕的教練而被取代？</li>
+                        <li>收入穩定性：高度浮動↑↓，寒暑假需付出極高工時</li>
+                        <li>成長空間：未知</li>
+                        <br>
+                        <span class="font-bold text-red-600">結論：<br></span>最低收入仍高於星宇基本月薪（無加班），但需承擔浮動的月份收入差異
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Comparison Table -->
+        <h2 class="text-3xl font-bold text-gray-900 mb-6 border-b pb-2">綜合評估</h2>
+        <!-- Added p-2 on mobile for better table wrapper spacing -->
+        <div class="overflow-x-auto card-shadow rounded-2xl bg-white p-2 sm:p-4">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">評估面向</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">星宇航空</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">開瑄國小</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap font-semibold">收入穩定性</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-green-600 font-medium">高</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-red-600 font-medium">低</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap font-semibold">平均月收入</td>
+                        <td class="px-6 py-4 whitespace-nowrap">NT$ 40,000+</td>
+                        <td class="px-6 py-4 whitespace-nowrap">NT$ 52,600</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap font-semibold">收入成長</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-red-600 font-medium">低</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-blue-600 font-medium">極高</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap font-semibold">固定加班</td>
+                        <td class="px-6 py-4 whitespace-nowrap">約 40 hr/月</td>
+                        <td class="px-6 py-4 whitespace-nowrap">依排課而異</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap font-semibold">風險</td>
+                        <td class="px-6 py-4 whitespace-nowrap">也許會分家成立航勤</td>
+                        <td class="px-6 py-4 whitespace-nowrap">是否被取代、不穩定</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap font-semibold">總結</td>
+                        <td class="px-6 py-4 whitespace-nowrap">目前的狀況...<br>可以選擇薪水高的！</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
