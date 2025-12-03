@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>職涯選擇比較與薪資計算</title>
+    <!-- 載入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 設定主要字體為 Inter */
+        html { font-family: 'Inter', sans-serif; }
+
+        /* Custom styles for tab switching */
+        .tab-button.active {
+            /* Update: Pill style uses solid background and white text for active state */
+            @apply bg-indigo-600 text-white shadow-md;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Custom scrollbar for better look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; /* slate-300 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; /* slate-400 */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-4 sm:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl">
+        
+        <!-- 標題與簡介 -->
+        <header class="p-6 border-b border-gray-100">
+            <h1 class="text-3xl font-extrabold text-gray-900">職涯選擇決策儀表板</h1>
+            <p class="mt-1 text-sm text-gray-500">分析開瑄國小教練與星宇航空地勤職位的薪資與考量點。</p>
+        </header>
+
+        <!-- 頁籤導航 (Tab Navigation) - 更新為橢圓按鈕樣式 -->
+        <div class="p-6 pt-4 sm:px-8">
+            <nav class="flex space-x-2 bg-gray-100 p-1 rounded-full max-w-full mx-auto shadow-inner border border-gray-200">
+                <button class="tab-button active flex-1 py-2 px-4 text-center text-sm font-medium rounded-full transition duration-150 ease-in-out hover:text-indigo-700 hover:bg-white" 
+                        data-tab="comparison">
+                    1. 職位綜合比較
+                </button>
+                <button class="tab-button flex-1 py-2 px-4 text-center text-sm font-medium text-gray-600 rounded-full transition duration-150 ease-in-out hover:text-indigo-700 hover:bg-white" 
+                        data-tab="salary-table">
+                    2. 星宇薪資福利細項
+                </button>
+                <button class="tab-button flex-1 py-2 px-4 text-center text-sm font-medium text-gray-600 rounded-full transition duration-150 ease-in-out hover:text-indigo-700 hover:bg-white" 
+                        data-tab="calculator">
+                    3. 薪資計算功能
+                </button>
+            </nav>
+        </div>
+        
+        <!-- 頁面內容 (Tab Contents) - 調整了頂部 padding -->
+        <div class="p-6 sm:p-8 pt-0">
+
+            <!-- 頁面 1: 綜合比較 (Comparison) -->
+            <div id="comparison" class="tab-content active space-y-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">職位綜合比較</h2>
+
+                <div class="space-y-4">
+                    <!-- Comparison Card -->
+                    <div class="overflow-x-auto rounded-lg shadow-md border border-gray-100">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">
+                                        項目
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
+                                        開瑄教練 (現職)
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
+                                        星宇地勤 (新職)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-indigo-50/50">
+                                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">預期月薪 (約)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-green-600">NT$ 37,000 (波動大)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-indigo-600">NT$ 40,000 (較穩定)</td>
+                                </tr>
+                                <tr class="hover:bg-indigo-50/50">
+                                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">薪資成長性</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">依業務量，成長受限於地區</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">制度內穩定調升，累積年資</td>
+                                </tr>
+                                <tr class="hover:bg-indigo-50/50">
+                                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">工作地點</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">離島（開銷較低）</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">本島 (桃園，開銷較高)</td>
+                                </tr>
+                                <tr class="hover:bg-indigo-50/50">
+                                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">工作性質</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">專長發揮，教學與運動</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">地勤支援，勞動性與輪班</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 考量點分析 (Pros and Cons) -->
+                <h3 class="text-xl font-semibold text-gray-800 mb-3 pt-4 border-t">選擇考量點分析</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <!-- 開瑄教練 (Current Job) Pros/Cons -->
+                    <div class="bg-yellow-50 p-5 rounded-lg border border-yellow-200 shadow-sm">
+                        <h4 class="text-lg font-bold text-yellow-800 mb-2">現職：開瑄教練</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-2">
+                            <li>**優點：** 職業成就感高（熱愛羽球）、生活壓力小、離島開銷低，有利存錢。</li>
+                            <li>**您的考量：** 缺乏本島大城市工作經驗，擔心錯過衝刺機會。</li>
+                            <li>**新增考量：** 薪水高度不穩定（月薪可能僅有 $2$ 萬多）、職涯發展空間較小。</li>
+                        </ul>
+                    </div>
+
+                    <!-- 星宇地勤 (STARLUX) Pros/Cons -->
+                    <div class="bg-blue-50 p-5 rounded-lg border border-blue-200 shadow-sm">
+                        <h4 class="text-lg font-bold text-blue-800 mb-2">新職：星宇地勤</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-2">
+                            <li>**優點：** 薪資穩定（預期 $4$ 萬起）、有固定升遷制度、大型企業資歷。</li>
+                            <li>**您的考量：** 擔心本島開銷大，尤其租房等費用會影響儲蓄。</li>
+                            <li>**新增考量：** 需輪班（對生理/社交影響大）、工作內容體力消耗大、全勤獎金易受病假扣除。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 頁面 2: 薪資福利表 (Salary and Benefits Table) -->
+            <div id="salary-table" class="tab-content space-y-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">星宇航空地勤薪資福利細項</h2>
+
+                <div class="rounded-lg shadow-md border border-gray-100 overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th colspan="2" class="px-6 py-3 text-center text-lg font-bold text-gray-700">月薪結構 (預期總額 NT$ 40,000)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr class="bg-green-50">
+                                <td class="px-6 py-4 font-bold text-gray-900 w-1/2">本薪 (Base Salary)</td>
+                                <td class="px-6 py-4 text-right text-lg text-green-600 font-extrabold">NT$ 31,000</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-3 font-medium text-gray-900">
+                                    勤務/現場輪班津貼 (Duty Allowance)
+                                    <span class="block text-xs font-normal text-gray-500 mt-0.5">實際執行現場輪班工作時核發。</span>
+                                </td>
+                                <td class="px-6 py-3 text-right text-gray-700">NT$ 5,000</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-3 font-medium text-gray-900">
+                                    交通津貼 (Transportation Allowance)
+                                    <span class="block text-xs font-normal text-gray-500 mt-0.5">固定每月核發。</span>
+                                </td>
+                                <td class="px-6 py-3 text-right text-gray-700">NT$ 1,000</td>
+                            </tr>
+                            <tr class="bg-yellow-50">
+                                <td class="px-6 py-3 font-medium text-gray-900">全勤獎金 (Full Attendance Bonus)</td>
+                                <td class="px-6 py-3 text-right text-gray-700">NT$ 3,000</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-bold text-gray-900 border-t border-gray-300">月薪總計 (Total Expected)</td>
+                                <td class="px-6 py-4 text-right text-xl text-indigo-600 font-extrabold border-t border-gray-300">NT$ 40,000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-8 p-5 bg-gray-50 rounded-lg border border-gray-200">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">重要福利與備註</h3>
+                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-2">
+                        <li>**額外浮動津貼：** 依實際輪班狀況，另核發「夜班津貼」、「交通補助」及「餐費補助」。此費用未計入上方 $40,000$ 總額。</li>
+                        <li>**全勤獎金注意事項：** 當月請事假/病假合計達 3 次（含）或總時數達 24 小時（含）以上，或有曠職記錄者，將全額扣減 (NT$ 3,000)。</li>
+                        <li>**特休：** 以週年制計算，依勞基法與公司管理規章辦理。</li>
+                        <li>**試用期：** 3 個月。</li>
+                        <li>**勞健保/勞退：** 於僱用日起辦理加保。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 頁面 3: 薪資計算功能 (Calculator) -->
+            <div id="calculator" class="tab-content space-y-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">每月薪水與加班費估算器 (勞基法版本)</h2>
+                <p class="text-sm text-red-600 mb-4 font-medium">注意：加班費計算已更新為參考勞基法公式：時薪 = (本薪 ÷ 30) ÷ 8。請依實際工時類別輸入時數。</p>
+
+                <div class="grid md:grid-cols-2 gap-6 bg-white p-6 rounded-lg shadow-md border border-indigo-100">
+                    <!-- 輸入區 -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-bold text-indigo-700 mb-2 border-b pb-1">基本薪資輸入</h3>
+                        <div>
+                            <label for="baseSalary" class="block text-sm font-medium text-gray-700">本薪 (Base Salary - 如：31000)</label>
+                            <input type="number" id="baseSalary" value="31000" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                        </div>
+                        <div>
+                            <label for="fixedAllowances" class="block text-sm font-medium text-gray-700">固定津貼總額 (如：勤務+交通津貼+全勤 = 9000)</label>
+                            <input type="number" id="fixedAllowances" value="9000" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                        </div>
+                        
+                        <h3 class="text-lg font-bold text-indigo-700 pt-4 mb-2 border-b pb-1">加班時數輸入</h3>
+                        <div>
+                            <label for="otWeekdayFirst2" class="block text-sm font-medium text-gray-700">平日加班時數 (前 2 小時, 1.34 倍)</label>
+                            <input type="number" id="otWeekdayFirst2" value="0" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                        </div>
+                        <div>
+                            <label for="otWeekdayAfter2" class="block text-sm font-medium text-gray-700">平日加班時數 (後續時數, 1.67 倍)</label>
+                            <input type="number" id="otWeekdayAfter2" value="0" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                        </div>
+                        <div>
+                            <label for="otRestDayHours" class="block text-sm font-medium text-gray-700">休息日加班時數 (複雜計算，此處建議輸入總時數)</label>
+                            <input type="number" id="otRestDayHours" value="0" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                        </div>
+                        
+                        <button onclick="calculateSalary()" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
+                            計算預期月收入 (更新)
+                        </button>
+                    </div>
+
+                    <!-- 結果區 -->
+                    <div class="space-y-4 bg-indigo-50 p-5 rounded-lg border border-indigo-200">
+                        <h3 class="text-xl font-semibold text-indigo-800 mb-3">計算結果</h3>
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="text-sm font-medium text-gray-700">計算時薪 (時薪 = 本薪 ÷ 240)</span>
+                            <span id="resultHourlyRate" class="text-lg font-bold text-gray-900">NT$ 129</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="text-sm font-medium text-gray-700">基本月收入 (本薪+津貼)</span>
+                            <span id="resultBaseIncome" class="text-lg font-bold text-gray-900">NT$ 40,000</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="text-sm font-medium text-gray-700">平日加班費 (1.34 & 1.67 倍)</span>
+                            <span id="resultOvertimePayWeekday" class="text-lg font-bold text-orange-600">NT$ 0</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="text-sm font-medium text-gray-700">休息日加班費 (估算)</span>
+                            <span id="resultOvertimePayRestDay" class="text-lg font-bold text-orange-600">NT$ 0</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-3 border-t border-indigo-300">
+                            <span class="text-lg font-extrabold text-indigo-800">總月收入預期</span>
+                            <span id="resultTotalIncome" class="text-3xl font-extrabold text-indigo-600">NT$ 40,000</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 p-4 bg-gray-100 rounded-lg text-sm text-gray-600 border border-gray-300">
+                    **勞基法加班費備註：**
+                    <ul class="list-disc list-inside mt-2 space-y-1">
+                        <li>**平日 (1.34/1.67倍)：** 前2小時 $1.34$ 倍，第3小時起 $1.67$ 倍。</li>
+                        <li>**休息日 (複雜計算)：** 前2小時 $1.34$ 倍，第3至8小時 $1.67$ 倍，第9至12小時 $2.67$ 倍。本計算器為簡化，請依您實際工作時段為準。</li>
+                        <li>**例假/國定假日：** 當日工資照給，並給予補休或額外工資 (至少 1 倍)。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // JavaScript for Tab Switching Logic
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.dataset.tab;
+
+                // Remove 'active' class from all buttons and content
+                tabButtons.forEach(btn => btn.classList.remove('active', 'text-white'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Add 'active' class to the clicked button and target content
+                button.classList.add('active');
+                document.getElementById(targetTab).classList.add('active');
+            });
+        });
+
+
+        // JavaScript for Salary Calculator Logic
+        function calculateSalary() {
+            // 輸入欄位
+            const baseSalaryInput = document.getElementById('baseSalary');
+            const fixedAllowancesInput = document.getElementById('fixedAllowances');
+            const otWeekdayFirst2Input = document.getElementById('otWeekdayFirst2'); // 平日前 2 小時 (1.34)
+            const otWeekdayAfter2Input = document.getElementById('otWeekdayAfter2'); // 平日後續時數 (1.67)
+            const otRestDayHoursInput = document.getElementById('otRestDayHours');   // 休息日總時數 (簡化計算)
+
+            // 確保輸入值為數字
+            const baseSalary = parseFloat(baseSalaryInput.value) || 0;
+            const fixedAllowances = parseFloat(fixedAllowancesInput.value) || 0;
+            const otWeekdayFirst2 = parseFloat(otWeekdayFirst2Input.value) || 0;
+            const otWeekdayAfter2 = parseFloat(otWeekdayAfter2Input.value) || 0;
+            const otRestDayHours = parseFloat(otRestDayHoursInput.value) || 0;
+
+            // 結果輸出欄位
+            const resultHourlyRate = document.getElementById('resultHourlyRate');
+            const resultBaseIncome = document.getElementById('resultBaseIncome');
+            const resultOvertimePayWeekday = document.getElementById('resultOvertimePayWeekday');
+            const resultOvertimePayRestDay = document.getElementById('resultOvertimePayRestDay');
+            const resultTotalIncome = document.getElementById('resultTotalIncome');
+            
+            // 格式化函數
+            const formatter = new Intl.NumberFormat('zh-TW', {
+                style: 'currency',
+                currency: 'NTD',
+                minimumFractionDigits: 0,
+            });
+
+            // --- 1. 計算基本時薪 (依據勞基法公式) ---
+            // 時薪 = (月薪 ÷ 30) ÷ 8
+            const dailyRate = baseSalary / 30;
+            const hourlyRate = dailyRate / 8;
+
+            // --- 2. 計算基本月收入 ---
+            const basicIncome = baseSalary + fixedAllowances;
+
+            // --- 3. 計算平日加班費 ---
+            const otWeekdayFirst2Pay = hourlyRate * 1.34 * otWeekdayFirst2;
+            const otWeekdayAfter2Pay = hourlyRate * 1.67 * otWeekdayAfter2;
+            const totalOtWeekdayPay = otWeekdayFirst2Pay + otWeekdayAfter2Pay;
+
+            // --- 4. 計算休息日加班費 (簡化計算) ---
+            let totalOtRestDayPay = 0;
+            if (otRestDayHours > 0) {
+                // 勞基法休息日工資計算複雜，這裡採用階梯費率簡化估算
+                let remainingHours = otRestDayHours;
+                let pay = 0;
+
+                // 休息日前 2 小時 (1.34 倍)
+                const hours134 = Math.min(remainingHours, 2);
+                pay += hourlyRate * 1.34 * hours134;
+                remainingHours -= hours134;
+
+                // 休息日第 3-8 小時 (1.67 倍)
+                const hours167 = Math.min(remainingHours, 6); // 3-8, 共 6 小時
+                pay += hourlyRate * 1.67 * hours167;
+                remainingHours -= hours167;
+
+                // 休息日第 9-12 小時 (2.67 倍)
+                const hours267 = Math.min(remainingHours, 4); // 9-12, 共 4 小時
+                pay += hourlyRate * 2.67 * hours267;
+                // remainingHours -= hours267; // 剩餘時數通常為 0
+
+                totalOtRestDayPay = pay;
+            }
+
+            // --- 5. 計算總月收入 ---
+            const totalOvertimePay = totalOtWeekdayPay + totalOtRestDayPay;
+            const totalIncome = basicIncome + totalOvertimePay;
+
+            // 更新 UI
+            resultHourlyRate.textContent = formatter.format(hourlyRate).replace('NT$', ''); // 顯示時薪不帶 NT$ 符號
+            resultBaseIncome.textContent = formatter.format(basicIncome);
+            resultOvertimePayWeekday.textContent = formatter.format(totalOtWeekdayPay);
+            resultOvertimePayRestDay.textContent = formatter.format(totalOtRestDayPay);
+            resultTotalIncome.textContent = formatter.format(totalIncome);
+        }
+
+        // Initialize calculator results on load
+        window.onload = function() {
+            calculateSalary();
+        }
+
+    </script>
+</body>
+</html>
