@@ -54,13 +54,27 @@
 </head>
 <body class="text-stone-800 selection:bg-orange-100 min-h-screen">
 
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#FDFBF7] text-stone-400">
-        載入中...
+    <!-- Loading Screen / Config Error Screen -->
+    <div id="loading-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#FDFBF7] text-stone-400 p-6 text-center">
+        <div id="loading-spinner">載入中...</div>
+        <div id="config-error" class="hidden max-w-lg bg-white p-6 rounded-2xl shadow-xl border border-red-100">
+            <div class="text-red-500 mb-2 font-bold text-lg">⚠️ 尚未設定 Firebase</div>
+            <p class="text-stone-600 text-sm mb-4">
+                為了在 GitHub 或本機上使用此網頁，您需要填入自己的 Firebase 設定。
+            </p>
+            <ol class="text-left text-xs text-stone-500 list-decimal pl-5 space-y-2 mb-4 bg-stone-50 p-4 rounded-xl">
+                <li>請用文字編輯器開啟此 HTML 檔案。</li>
+                <li>搜尋關鍵字 <code class="bg-stone-200 px-1 rounded">const firebaseConfig</code>。</li>
+                <li>將您的 Firebase Config 物件填入該處。</li>
+            </ol>
+            <button onclick="location.reload()" class="bg-stone-800 text-white px-4 py-2 rounded-xl text-sm font-bold w-full">
+                我已設定好，重新整理
+            </button>
+        </div>
     </div>
 
     <!-- Main Content Area -->
-    <main id="app-content" class="pb-24 animate-fade-in"></main>
+    <main id="app-content" class="pb-24 animate-fade-in hidden"></main>
 
     <!-- Add/Edit Modal (Hidden by default) -->
     <div id="modal-overlay" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-stone-900/40 backdrop-blur-sm p-4 hidden">
@@ -176,14 +190,101 @@
             editingProperty: null // null means adding new
         };
 
-        // --- Firebase Init ---
-        // Use global config if available, otherwise placeholder for demo (won't work without real config)
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'taoyuan-rental-v1';
+        // ==========================================================
+        // Firebase 設定區塊 (請在此填入您的設定)
+        // ==========================================================
+        
+        // 1. 如果是在本機/GitHub環境，請將您的 Firebase Config 填入下方的 configObject 中
+        // 2. 格式範例: { apiKey: "...", authDomain: "...", ... }
+        const userProvidedConfig = {
+            apiKey: "AIzaSyDU1oVt1I3A-omLnc7rGmuxRnyptK8VCFM",
+            authDomain: "yun-328.firebaseapp.com",
+            projectId: "yun-328",
+            storageBucket: "yun-328.firebasestorage.app",
+            messagingSenderId: "813359854650",
+            appId: "1:813359854650:web:1df147ec729fffd5fb7103",
+            measurementId: "G-9LTR4FLY8P"
+        };
 
-        const appInstance = initializeApp(firebaseConfig);
-        const auth = getAuth(appInstance);
-        const db = getFirestore(appInstance);
+        // 邏輯: 優先使用環境變數(在編輯器中)，否則使用使用者填入的設定
+        let firebaseConfig = {};
+        let appId = 'taoyuan-rental-v1';
+
+        if (typeof __firebase_config !== 'undefined') {
+             // 編輯器環境
+             firebaseConfig = JSON.parse(__firebase_config);
+             if (typeof __app_id !== 'undefined') appId = __app_id;
+        } else {
+             // GitHub/本機環境
+             firebaseConfig = userProvidedConfig;
+        }
+
+        // --- Init Logic ---
+        async function init() {
+            // 檢查是否有設定 Config
+            if (!firebaseConfig.apiKey) {
+                document.getElementById('loading-spinner').classList.add('hidden');
+                document.getElementById('config-error').classList.remove('hidden');
+                return; // 停止執行
+            }
+
+            const appInstance = initializeApp(firebaseConfig);
+            window.auth = getAuth(appInstance); // Make auth globally available for inner functions
+            window.db = getFirestore(appInstance);
+
+            // Populate Modal Select
+            const select = document.getElementById('input-area');
+            state.taoyuanAreas.forEach(area => {
+                const opt = document.createElement('option');
+                opt.value = area;
+                opt.innerText = area;
+                select.appendChild(opt);
+            });
+
+            // Auth
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(window.auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(window.auth);
+                }
+            } catch (error) {
+                console.error("Auth error", error);
+                // 顯示錯誤給使用者看，而不是只在 console
+                alert("連線錯誤: " + error.message + "\n請檢查您的 Firebase 設定是否正確，並確認已開啟 Anonymous Authentication (匿名登入)。");
+            }
+
+            onAuthStateChanged(window.auth, (user) => {
+                state.user = user;
+                if (user) {
+                    document.getElementById('loading-screen').classList.add('hidden');
+                    document.getElementById('app-content').classList.remove('hidden');
+                    setupListeners();
+                    renderContent();
+                }
+            });
+        }
+
+        function setupListeners() {
+            if (!state.user) return;
+            const db = window.db;
+
+            // Requirements Listener
+            const reqQuery = query(collection(db, 'artifacts', appId, 'public', 'data', 'requirements'));
+            onSnapshot(reqQuery, (snapshot) => {
+                state.requirements = snapshot.docs.map(d => ({id: d.id, ...d.data()}))
+                    .sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                if (state.activeTab === 'home') renderHome();
+            });
+
+            // Properties Listener
+            const propQuery = query(collection(db, 'artifacts', appId, 'public', 'data', 'properties'));
+            onSnapshot(propQuery, (snapshot) => {
+                state.properties = snapshot.docs.map(d => ({id: d.id, ...d.data()}))
+                    .sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                if (state.activeTab !== 'home') renderContent();
+            });
+        }
 
         // --- Global Functions for HTML Access ---
         window.app = {
@@ -198,17 +299,16 @@
             },
             deleteRequirement: async (id) => {
                 if(!state.user) return;
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'requirements', id));
+                await deleteDoc(doc(window.db, 'artifacts', appId, 'public', 'data', 'requirements', id));
             },
             toggleFavorite: async (id, currentVal) => {
                 if(!state.user) return;
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'properties', id), {
+                await updateDoc(doc(window.db, 'artifacts', appId, 'public', 'data', 'properties', id), {
                     isFavorite: !currentVal
                 });
             },
             openModal: (propId = null) => {
                 const modal = document.getElementById('modal-overlay');
-                const content = document.getElementById('modal-content');
                 const deleteBtn = document.getElementById('delete-btn');
                 const title = document.getElementById('modal-title');
                 
@@ -240,65 +340,13 @@
 
                 modal.classList.remove('hidden');
                 // Simple animation class toggle could go here
-                content.classList.remove('translate-y-full'); 
+                document.getElementById('modal-content').classList.remove('translate-y-full'); 
             },
             setAreaFilter: (area) => {
                 state.areaFilter = area;
                 renderContent(); // Re-render browse view
             }
         };
-
-        // --- Init Logic ---
-        async function init() {
-            // Populate Modal Select
-            const select = document.getElementById('input-area');
-            state.taoyuanAreas.forEach(area => {
-                const opt = document.createElement('option');
-                opt.value = area;
-                opt.innerText = area;
-                select.appendChild(opt);
-            });
-
-            // Auth
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (error) {
-                console.error("Auth error", error);
-            }
-
-            onAuthStateChanged(auth, (user) => {
-                state.user = user;
-                if (user) {
-                    document.getElementById('loading-screen').classList.add('hidden');
-                    setupListeners();
-                    renderContent();
-                }
-            });
-        }
-
-        function setupListeners() {
-            if (!state.user) return;
-
-            // Requirements Listener
-            const reqQuery = query(collection(db, 'artifacts', appId, 'public', 'data', 'requirements'));
-            onSnapshot(reqQuery, (snapshot) => {
-                state.requirements = snapshot.docs.map(d => ({id: d.id, ...d.data()}))
-                    .sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-                if (state.activeTab === 'home') renderHome();
-            });
-
-            // Properties Listener
-            const propQuery = query(collection(db, 'artifacts', appId, 'public', 'data', 'properties'));
-            onSnapshot(propQuery, (snapshot) => {
-                state.properties = snapshot.docs.map(d => ({id: d.id, ...d.data()}))
-                    .sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-                if (state.activeTab !== 'home') renderContent();
-            });
-        }
 
         // --- UI Rendering ---
 
@@ -411,7 +459,7 @@
             if(!text) return;
             
             input.value = ''; // Optimistic clear
-            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'requirements'), {
+            await addDoc(collection(window.db, 'artifacts', appId, 'public', 'data', 'requirements'), {
                 text: text,
                 createdAt: serverTimestamp()
             });
@@ -560,9 +608,9 @@
             };
 
             if (propId) {
-                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'properties', propId), payload);
+                await updateDoc(doc(window.db, 'artifacts', appId, 'public', 'data', 'properties', propId), payload);
             } else {
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'properties'), payload);
+                await addDoc(collection(window.db, 'artifacts', appId, 'public', 'data', 'properties'), payload);
             }
             document.getElementById('modal-overlay').classList.add('hidden');
         };
@@ -570,7 +618,7 @@
         document.getElementById('delete-btn').onclick = async () => {
             if(!confirm('確定要刪除這個租屋資訊嗎？')) return;
             const propId = document.getElementById('modal-prop-id').value;
-            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'properties', propId));
+            await deleteDoc(doc(window.db, 'artifacts', appId, 'public', 'data', 'properties', propId));
             document.getElementById('modal-overlay').classList.add('hidden');
         };
 
