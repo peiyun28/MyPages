@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>桃園暖心租屋筆記</title>
+    <title>桃園租屋</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -76,11 +76,38 @@
     <!-- Main Content Area -->
     <main id="app-content" class="pb-24 animate-fade-in hidden"></main>
 
+    <!-- Requirement Action Modal (New) -->
+    <div id="req-action-modal" class="fixed inset-0 z-[60] flex items-center justify-center bg-stone-900/20 backdrop-blur-[2px] hidden animate-fade-in">
+        <div class="bg-white w-[80%] max-w-sm rounded-2xl shadow-xl p-5 transform transition-all scale-100 animate-slide-up">
+            <h3 class="text-center text-lg font-bold text-stone-800 mb-2">管理需求</h3>
+            <div class="bg-stone-50 p-3 rounded-xl mb-6 text-center">
+                <p id="req-action-text" class="text-stone-600 font-medium text-sm truncate"></p>
+            </div>
+            
+            <input type="hidden" id="req-action-id">
+            <input type="hidden" id="req-action-fulltext">
+            
+            <div class="flex flex-col gap-3">
+                <!-- 直接在 HTML 綁定 onclick，確保功能不失效 -->
+                <button onclick="app.handleModalEdit()" class="w-full py-3 bg-white border border-stone-200 text-stone-700 font-bold rounded-xl hover:bg-stone-50 hover:border-stone-300 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="pencil" class="w-4 h-4"></i> 編輯內容
+                </button>
+                <button onclick="app.handleModalDelete()" class="w-full py-3 bg-red-50 text-red-500 font-bold rounded-xl hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i> 刪除此項
+                </button>
+                <div class="h-px bg-stone-100 my-1"></div>
+                <button onclick="document.getElementById('req-action-modal').classList.add('hidden')" class="w-full py-2 text-stone-400 font-medium hover:text-stone-600">
+                    取消
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Add/Edit Modal (Hidden by default) -->
     <div id="modal-overlay" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-stone-900/40 backdrop-blur-sm p-4 hidden">
         <div id="modal-content" class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl transform transition-transform duration-300 translate-y-full sm:translate-y-0">
             <div class="flex justify-between items-center mb-6">
-                <h3 id="modal-title" class="text-xl font-bold text-stone-800">新增房源</h3>
+                <h3 id="modal-title" class="text-xl font-bold text-stone-800">🏠 新增房源</h3>
                 <button id="close-modal-btn" class="p-2 bg-stone-50 rounded-full hover:bg-stone-100">
                     <i data-lucide="x" class="w-5 h-5 text-stone-500"></i>
                 </button>
@@ -90,34 +117,33 @@
                 <input type="hidden" id="modal-prop-id">
                 
                 <div>
-                    <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">標題</label>
-                    <input id="input-title" class="w-full bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 text-stone-800 focus:ring-2 focus:ring-stone-200 outline-none transition-all" placeholder="例如：中壢火車站旁大套房">
+                    <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">標 題</label>
+                    <input id="input-title" class="w-full bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 text-stone-800 focus:ring-2 focus:ring-stone-200 outline-none transition-all" placeholder="必 填">
                 </div>
 
                 <div class="flex gap-4">
                     <div class="flex-1">
-                        <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">區域</label>
+                        <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">區 域</label>
                         <select id="input-area" class="w-full bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 text-stone-800 outline-none appearance-none">
                             <!-- Options populated by JS -->
                         </select>
                     </div>
                     <div class="flex-1">
-                        <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">租金</label>
-                        <input type="number" id="input-price" class="w-full bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 text-stone-800 focus:ring-2 focus:ring-stone-200 outline-none" placeholder="15000">
+                        <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">租 金</label>
+                        <input type="number" id="input-price" class="w-full bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 text-stone-800 focus:ring-2 focus:ring-stone-200 outline-none" placeholder="必 填">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">地址 (用於地圖導航)</label>
+                    <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">地 址</label>
                     <div class="relative">
                         <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400"></i>
-                        <input id="input-address" class="w-full bg-stone-50 border border-stone-100 rounded-xl pl-10 pr-4 py-3 text-stone-800 focus:ring-2 focus:ring-stone-200 outline-none" placeholder="請輸入完整地址">
+                        <input id="input-address" class="w-full bg-stone-50 border border-stone-100 rounded-xl pl-10 pr-4 py-3 text-stone-800 focus:ring-2 focus:ring-stone-200 outline-none" placeholder="請 輸 入 地 址">
                     </div>
                 </div>
 
-                <!-- Link Input -->
                 <div>
-                    <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">相關連結 (如 591 網址)</label>
+                    <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">連 結</label>
                     <div class="relative">
                         <i data-lucide="link" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400"></i>
                         <input id="input-link" class="w-full bg-stone-50 border border-stone-100 rounded-xl pl-10 pr-4 py-3 text-stone-800 focus:ring-2 focus:ring-stone-200 outline-none" placeholder="https://...">
@@ -125,8 +151,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">備註</label>
-                    <textarea id="input-note" class="w-full bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 text-stone-800 focus:ring-2 focus:ring-stone-200 outline-none h-24 resize-none" placeholder="房東電話、看房時間..."></textarea>
+                    <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">備 註</label>
+                    <textarea id="input-note" class="w-full bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 text-stone-800 focus:ring-2 focus:ring-stone-200 outline-none h-24 resize-none" placeholder="預 約 訊 息 、 水 電 費 ..."></textarea>
                 </div>
 
                 <div class="flex gap-3 pt-2">
@@ -135,39 +161,39 @@
                     </button>
                     <button id="save-btn" class="flex-1 flex items-center justify-center gap-2 bg-stone-800 text-white rounded-xl font-bold text-lg hover:bg-stone-700 active:scale-[0.98] transition-all shadow-lg shadow-stone-200">
                         <i data-lucide="save" class="w-5 h-5"></i>
-                        儲存
+                        儲 存
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- 下面導覽列 -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-stone-100 pb-safe pt-2 shadow-[0_-5px_20px_rgba(0,0,0,0.03)] z-40">
         <div class="max-w-md mx-auto flex justify-around items-center h-16">
             
-            <!-- Browse Tab -->
+            <!-- 左 Tab -->
             <button id="nav-browse" onclick="app.switchTab('browse')" class="flex-1 flex flex-col items-center justify-center gap-1 h-full text-stone-400 transition-colors hover:bg-stone-50 active:scale-95 group rounded-2xl mx-1">
                 <div class="relative">
-                    <i data-lucide="search" class="w-6 h-6 nav-icon-transition"></i>
+                    <i data-lucide="house" class="w-6 h-6 nav-icon-transition"></i>
                 </div>
-                <span class="text-[10px] font-medium tracking-wide nav-icon-transition">找房</span>
+                <span class="text-[10px] font-medium tracking-wide nav-icon-transition">房 源</span>
             </button>
 
-            <!-- Home Tab -->
+            <!-- 中 Tab -->
             <button id="nav-home" onclick="app.switchTab('home')" class="flex-1 flex flex-col items-center justify-center gap-1 h-full text-stone-400 transition-colors hover:bg-stone-50 active:scale-95 group rounded-2xl mx-1">
                 <div class="relative">
-                    <i data-lucide="home" class="w-6 h-6 nav-icon-transition"></i>
+                    <i data-lucide="list" class="w-6 h-6 nav-icon-transition"></i>
                 </div>
-                <span class="text-[10px] font-medium tracking-wide nav-icon-transition">首頁</span>
+                <span class="text-[10px] font-medium tracking-wide nav-icon-transition">清 單</span>
             </button>
 
-            <!-- Favorites Tab -->
+            <!-- 右 Tab -->
             <button id="nav-favorites" onclick="app.switchTab('favorites')" class="flex-1 flex flex-col items-center justify-center gap-1 h-full text-stone-400 transition-colors hover:bg-stone-50 active:scale-95 group rounded-2xl mx-1">
                 <div class="relative">
                     <i data-lucide="heart" class="w-6 h-6 nav-icon-transition"></i>
                 </div>
-                <span class="text-[10px] font-medium tracking-wide nav-icon-transition">收藏</span>
+                <span class="text-[10px] font-medium tracking-wide nav-icon-transition">收 藏</span>
             </button>
 
         </div>
@@ -190,12 +216,6 @@
             editingProperty: null // null means adding new
         };
 
-        // ==========================================================
-        // Firebase 設定區塊 (請在此填入您的設定)
-        // ==========================================================
-        
-        // 1. 如果是在本機/GitHub環境，請將您的 Firebase Config 填入下方的 configObject 中
-        // 2. 格式範例: { apiKey: "...", authDomain: "...", ... }
         const userProvidedConfig = {
             apiKey: "AIzaSyDU1oVt1I3A-omLnc7rGmuxRnyptK8VCFM",
             authDomain: "yun-328.firebaseapp.com",
@@ -274,7 +294,11 @@
             onSnapshot(reqQuery, (snapshot) => {
                 state.requirements = snapshot.docs.map(d => ({id: d.id, ...d.data()}))
                     .sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-                if (state.activeTab === 'home') renderHome();
+                // FIX: If currently viewing home, re-render AND refresh icons
+                if (state.activeTab === 'home') {
+                    renderHome();
+                    lucide.createIcons(); 
+                }
             });
 
             // Properties Listener
@@ -282,6 +306,7 @@
             onSnapshot(propQuery, (snapshot) => {
                 state.properties = snapshot.docs.map(d => ({id: d.id, ...d.data()}))
                     .sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                // FIX: For non-home tabs, renderContent() already calls createIcons(), so it's fine.
                 if (state.activeTab !== 'home') renderContent();
             });
         }
@@ -297,9 +322,56 @@
                 const q = encodeURIComponent(address);
                 window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, '_blank');
             },
+            openReqOptions: (id, text) => {
+                document.getElementById('req-action-id').value = id;
+                document.getElementById('req-action-fulltext').value = text;
+                document.getElementById('req-action-text').innerText = text;
+                document.getElementById('req-action-modal').classList.remove('hidden');
+            },
+            // 新增這兩個 Helper functions，直接給 HTML onclick 使用
+            handleModalEdit: () => {
+                const id = document.getElementById('req-action-id').value;
+                const text = document.getElementById('req-action-fulltext').value;
+                window.app.editRequirement(id, text);
+            },
+            handleModalDelete: () => {
+                const id = document.getElementById('req-action-id').value;
+                window.app.deleteRequirement(id);
+            },
             deleteRequirement: async (id) => {
                 if(!state.user) return;
-                await deleteDoc(doc(window.db, 'artifacts', appId, 'public', 'data', 'requirements', id));
+                
+                // Hide modal first to prevent double clicks
+                document.getElementById('req-action-modal').classList.add('hidden');
+                
+                // Double confirm
+                if(!confirm('確定要刪除這條需求嗎？')) return;
+
+                try {
+                    await deleteDoc(doc(window.db, 'artifacts', appId, 'public', 'data', 'requirements', id));
+                } catch (error) {
+                    console.error("Delete failed", error);
+                    alert("刪除失敗: " + error.message + "\n請確認您的資料庫權限是否已開啟。");
+                }
+            },
+            editRequirement: async (id, oldText) => {
+                if(!state.user) return;
+                document.getElementById('req-action-modal').classList.add('hidden');
+                
+                // Small timeout to allow modal to close visually
+                setTimeout(async () => {
+                    const newText = prompt("修改需求內容：", oldText);
+                    if(newText && newText.trim() !== "" && newText.trim() !== oldText) {
+                         try {
+                             await updateDoc(doc(window.db, 'artifacts', appId, 'public', 'data', 'requirements', id), {
+                                text: newText.trim()
+                             });
+                         } catch (error) {
+                            console.error("Edit failed", error);
+                            alert("修改失敗: " + error.message);
+                         }
+                    }
+                }, 100);
             },
             toggleFavorite: async (id, currentVal) => {
                 if(!state.user) return;
@@ -408,39 +480,40 @@
             lucide.createIcons();
         }
 
-        // 1. Home View
+        // 1. 清單文字介面
         function renderHome() {
             const container = document.getElementById('app-content');
             
             const html = `
                 <div class="max-w-md mx-auto w-full px-5 py-6">
                     <header class="mb-8 text-center">
-                        <h1 class="text-2xl font-bold text-stone-800 tracking-tight">桃園租屋筆記</h1>
-                        <p class="text-stone-500 mt-1">規劃我們未來的家</p>
+                        <h1 class="text-2xl font-bold text-stone-800 tracking-tight">桃 園 租 屋</h1>
+                        <p class="text-stone-500 mt-1">尋 找 我 們 未 來 的 家 (ﾉ>ω<)ﾉ</p>
                     </header>
 
                     <div class="bg-white p-2 rounded-2xl shadow-sm border border-stone-100 flex gap-2 mb-6">
-                        <input id="new-req-input" placeholder="新增需求 (例如: 要有陽台...)" class="flex-1 px-3 py-2 outline-none text-stone-700 bg-transparent placeholder:text-stone-400">
-                        <button id="add-req-btn" class="bg-stone-800 text-white rounded-xl w-10 h-10 flex items-center justify-center hover:bg-stone-700 active:scale-95 transition-all">
+                        <input id="new-req-input" placeholder="要 有 洗 衣 機" class="flex-1 px-3 py-2 outline-none text-stone-700 bg-transparent placeholder:text-stone-400">
+                        <button id="add-req-btn" class="bg-orange-500 text-white rounded-xl px-4 py-2 flex items-center justify-center gap-1 hover:bg-orange-600 active:scale-95 transition-all shadow-md shadow-orange-200">
                             <i data-lucide="plus" class="w-5 h-5"></i>
+                            <span class="font-bold text-sm">加入</span>
                         </button>
                     </div>
 
                     <div class="space-y-3">
-                        <h2 class="text-sm font-bold text-stone-400 uppercase tracking-wider ml-1">我們的需求清單</h2>
+                        <h2 class="text-sm font-bold text-stone-400 uppercase tracking-wider ml-1">🗒️ 租 屋 需 求 清 單 </h2>
                         ${state.requirements.length === 0 ? `
                             <div class="text-center py-10 text-stone-400 bg-stone-50 rounded-2xl border-2 border-dashed border-stone-200">
-                                還沒有寫下需求喔
+                                快 來 列 下 租 屋 需 求 吧 (๑•̀ㅂ•́)و✧
                             </div>
                         ` : state.requirements.map(req => `
-                            <div class="group flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-stone-100 hover:border-orange-200 transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-green-600/80"></i>
-                                    <span class="text-stone-700 font-medium">${escapeHtml(req.text)}</span>
+                            <div onclick="app.openReqOptions('${req.id}', this.getAttribute('data-text'))" data-text="${escapeHtml(req.text)}" class="group flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-stone-100 hover:border-orange-200 transition-colors cursor-pointer active:scale-[0.99]">
+                                <div class="flex items-center gap-3 flex-1 overflow-hidden">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-green-600/80 flex-shrink-0"></i>
+                                    <span class="text-stone-700 font-medium truncate">${escapeHtml(req.text)}</span>
                                 </div>
-                                <button onclick="app.deleteRequirement('${req.id}')" class="p-2 text-stone-400 hover:text-red-500 transition-all">
-                                    <i data-lucide="x" class="w-[18px] h-[18px]"></i>
-                                </button>
+                                <div class="text-stone-300 group-hover:text-stone-500">
+                                    <i data-lucide="more-horizontal" class="w-5 h-5"></i>
+                                </div>
                             </div>
                         `).join('')}
                     </div>
@@ -465,7 +538,7 @@
             });
         }
 
-        // 2. Browse View
+        // 2. 房源文字介面
         function renderBrowse() {
             const container = document.getElementById('app-content');
             
@@ -498,7 +571,7 @@
                                 <div class="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <i data-lucide="search" class="text-stone-400"></i>
                                 </div>
-                                <p class="text-stone-500">這個區域還沒有資料</p>
+                                <p class="text-stone-500">尚 無 資 料</p>
                             </div>
                         ` : list.map(p => createPropertyCard(p)).join('')}
                     </div>
@@ -507,7 +580,7 @@
             container.innerHTML = html;
         }
 
-        // 3. Favorites View
+        // 3. 收藏文字介面
         function renderFavorites() {
             const container = document.getElementById('app-content');
             const list = state.properties.filter(p => p.isFavorite);
@@ -516,17 +589,17 @@
                 <div class="max-w-md mx-auto w-full px-4 py-6 pb-24">
                     <header class="mb-6">
                         <h1 class="text-2xl font-bold text-stone-800 flex items-center gap-2">
-                            我的收藏
+                            收 藏
                             <i data-lucide="heart" class="text-orange-500 fill-orange-500 w-6 h-6"></i>
                         </h1>
-                        <p class="text-stone-500 mt-1">心動的清單 (${list.length})</p>
+                        <p class="text-stone-500 mt-1">必 問 清 單 (${list.length})</p>
                     </header>
 
                     <div class="grid gap-1">
                         ${list.length === 0 ? `
                             <div class="text-center py-20 bg-white rounded-3xl border border-dashed border-stone-200 mx-4">
-                                <p class="text-stone-400">還沒有收藏任何房子喔</p>
-                                <button onclick="app.switchTab('browse')" class="mt-4 text-orange-600 font-medium hover:underline">去逛逛</button>
+                                <p class="text-stone-400">還 沒 有 收 藏 任 何 房 子 喔 ( ˘･з･)</p>
+                                <button onclick="app.switchTab('browse')" class="mt-4 text-orange-600 font-medium hover:underline">尋 找 去</button>
                             </div>
                         ` : list.map(p => createPropertyCard(p)).join('')}
                     </div>
@@ -541,11 +614,11 @@
             const linkButton = p.link ? `
                 <button onclick="event.stopPropagation(); window.open('${escapeHtml(p.link)}', '_blank')" class="flex-1 flex items-center justify-center gap-1 py-2 rounded-xl bg-orange-50 text-orange-700 text-sm font-medium hover:bg-orange-100 transition-colors">
                     <i data-lucide="external-link" class="w-4 h-4"></i>
-                    連結
+                    連 結
                 </button>
             ` : `
                 <button disabled class="flex-1 flex items-center justify-center gap-1 py-2 rounded-xl bg-stone-50 text-stone-300 text-sm font-medium cursor-not-allowed">
-                    暫無連結
+                    暫 無 連 結
                 </button>
             `;
 
@@ -560,18 +633,18 @@
                     
                     <h3 class="text-lg font-bold text-stone-800 mb-1">${escapeHtml(p.title)}</h3>
                     <p class="text-orange-600 font-bold text-xl mb-2">
-                        $${p.price.toLocaleString()}<span class="text-sm font-normal text-stone-500">/月</span>
+                        $${p.price.toLocaleString()}<span class="text-sm font-normal text-stone-500"> / 月</span>
                     </p>
                     
                     <div class="flex items-center text-stone-500 text-sm mb-3">
                         <i data-lucide="map-pin" class="w-[14px] h-[14px] mr-1 flex-shrink-0"></i>
-                        <span class="truncate">${escapeHtml(p.address || "暫無地址")}</span>
+                        <span class="truncate">${escapeHtml(p.address || "暫 無 地 址")}</span>
                     </div>
 
                     <div class="flex gap-2 mt-3 pt-3 border-t border-stone-100">
                         <button onclick="event.stopPropagation(); app.openMap('${escapeHtml(p.address)}')" class="flex-1 flex items-center justify-center gap-1 py-2 rounded-xl bg-stone-50 text-stone-600 text-sm font-medium hover:bg-stone-100 transition-colors">
                             <i data-lucide="map-pin" class="w-4 h-4"></i>
-                            地圖
+                            地 圖
                         </button>
                         ${linkButton}
                     </div>
@@ -579,7 +652,7 @@
             `;
         }
 
-        // --- Modal Events ---
+        // --- Modal 事件 ---
         document.getElementById('close-modal-btn').onclick = () => {
             document.getElementById('modal-overlay').classList.add('hidden');
         };
@@ -616,7 +689,7 @@
         };
 
         document.getElementById('delete-btn').onclick = async () => {
-            if(!confirm('確定要刪除這個租屋資訊嗎？')) return;
+            if(!confirm('確 定 要 刪 除 這 個 租 屋 資 訊 嗎 (|||ﾟдﾟ)')) return;
             const propId = document.getElementById('modal-prop-id').value;
             await deleteDoc(doc(window.db, 'artifacts', appId, 'public', 'data', 'properties', propId));
             document.getElementById('modal-overlay').classList.add('hidden');
