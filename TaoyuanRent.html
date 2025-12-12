@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>桃園暖心租屋筆記</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts (Noto Sans TC) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #FDFBF7;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Hide scrollbar for horizontal scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        /* Custom Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        .animate-slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+        /* Spring Transition for Nav Icons */
+        .nav-icon-transition {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+    </style>
+</head>
+<body class="text-stone-800 selection:bg-orange-100 min-h-screen">
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#FDFBF7] text-stone-400">
+        載入中...
+    </div>
+
+    <!-- Main Content Area -->
+    <main id="app-content" class="pb-24 animate-fade-in"></main>
+
+    <!-- Add/Edit Modal (Hidden by default) -->
+    <div id="modal-overlay" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-stone-900/40 backdrop-blur-sm p-4 hidden">
+        <div id="modal-content" class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl transform transition-transform duration-300 translate-y-full sm:translate-y-0">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="modal-title" class="text-xl font-bold text-stone-800">新增房源</h3>
+                <button id="close-modal-btn" class="p-2 bg-stone-50 rounded-full hover:bg-stone-100">
+                    <i data-lucide="x" class="w-5 h-5 text-stone-500"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <input type="hidden" id="modal-prop-id">
+                
+                <div>
+                    <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">標題</label>
+                    <input id="input-title" class="w-full bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 text-stone-800 focus:ring-2 focus:ring-stone-200 outline-none transition-all" placeholder="例如：中壢火車站旁大套房">
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">區域</label>
+                        <select id="input-area" class="w-full bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 text-stone-800 outline-none appearance-none">
+                            <!-- Options populated by JS -->
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">租金</label>
+                        <input type="number" id="input-price" class="w-full bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 text-stone-800 focus:ring-2 focus:ring-stone-200 outline-none" placeholder="15000">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">地址 (用於地圖導航)</label>
+                    <div class="relative">
+                        <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400"></i>
+                        <input id="input-address" class="w-full bg-stone-50 border border-stone-100 rounded-xl pl-10 pr-4 py-3 text-stone-800 focus:ring-2 focus:ring-stone-200 outline-none" placeholder="請輸入完整地址">
+                    </div>
+                </div>
+
+                <!-- Link Input -->
+                <div>
+                    <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">相關連結 (如 591 網址)</label>
+                    <div class="relative">
+                        <i data-lucide="link" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400"></i>
+                        <input id="input-link" class="w-full bg-stone-50 border border-stone-100 rounded-xl pl-10 pr-4 py-3 text-stone-800 focus:ring-2 focus:ring-stone-200 outline-none" placeholder="https://...">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-stone-400 uppercase mb-1 ml-1">備註</label>
+                    <textarea id="input-note" class="w-full bg-stone-50 border border-stone-100 rounded-xl px-4 py-3 text-stone-800 focus:ring-2 focus:ring-stone-200 outline-none h-24 resize-none" placeholder="房東電話、看房時間..."></textarea>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button id="delete-btn" class="p-4 rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition-colors hidden">
+                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                    </button>
+                    <button id="save-btn" class="flex-1 flex items-center justify-center gap-2 bg-stone-800 text-white rounded-xl font-bold text-lg hover:bg-stone-700 active:scale-[0.98] transition-all shadow-lg shadow-stone-200">
+                        <i data-lucide="save" class="w-5 h-5"></i>
+                        儲存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-stone-100 pb-safe pt-2 shadow-[0_-5px_20px_rgba(0,0,0,0.03)] z-40">
+        <div class="max-w-md mx-auto flex justify-around items-center h-16">
+            
+            <!-- Browse Tab -->
+            <button id="nav-browse" onclick="app.switchTab('browse')" class="flex-1 flex flex-col items-center justify-center gap-1 h-full text-stone-400 transition-colors hover:bg-stone-50 active:scale-95 group rounded-2xl mx-1">
+                <div class="relative">
+                    <i data-lucide="search" class="w-6 h-6 nav-icon-transition"></i>
+                </div>
+                <span class="text-[10px] font-medium tracking-wide nav-icon-transition">找房</span>
+            </button>
+
+            <!-- Home Tab -->
+            <button id="nav-home" onclick="app.switchTab('home')" class="flex-1 flex flex-col items-center justify-center gap-1 h-full text-stone-400 transition-colors hover:bg-stone-50 active:scale-95 group rounded-2xl mx-1">
+                <div class="relative">
+                    <i data-lucide="home" class="w-6 h-6 nav-icon-transition"></i>
+                </div>
+                <span class="text-[10px] font-medium tracking-wide nav-icon-transition">首頁</span>
+            </button>
+
+            <!-- Favorites Tab -->
+            <button id="nav-favorites" onclick="app.switchTab('favorites')" class="flex-1 flex flex-col items-center justify-center gap-1 h-full text-stone-400 transition-colors hover:bg-stone-50 active:scale-95 group rounded-2xl mx-1">
+                <div class="relative">
+                    <i data-lucide="heart" class="w-6 h-6 nav-icon-transition"></i>
+                </div>
+                <span class="text-[10px] font-medium tracking-wide nav-icon-transition">收藏</span>
+            </button>
+
+        </div>
+    </nav>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // --- App State ---
+        const state = {
+            user: null,
+            activeTab: 'home',
+            requirements: [],
+            properties: [],
+            areaFilter: '全部',
+            taoyuanAreas: ['桃園區', '中壢區', '平鎮區', '八德區', '楊梅區', '蘆竹區', '龜山區', '龍潭區', '大溪區', '大園區', '觀音區', '新屋區'],
+            editingProperty: null // null means adding new
+        };
+
+        // --- Firebase Init ---
+        // Use global config if available, otherwise placeholder for demo (won't work without real config)
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'taoyuan-rental-v1';
+
+        const appInstance = initializeApp(firebaseConfig);
+        const auth = getAuth(appInstance);
+        const db = getFirestore(appInstance);
+
+        // --- Global Functions for HTML Access ---
+        window.app = {
+            switchTab: (tab) => {
+                state.activeTab = tab;
+                updateNavUI();
+                renderContent();
+            },
+            openMap: (address) => {
+                const q = encodeURIComponent(address);
+                window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, '_blank');
+            },
+            deleteRequirement: async (id) => {
+                if(!state.user) return;
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'requirements', id));
+            },
+            toggleFavorite: async (id, currentVal) => {
+                if(!state.user) return;
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'properties', id), {
+                    isFavorite: !currentVal
+                });
+            },
+            openModal: (propId = null) => {
+                const modal = document.getElementById('modal-overlay');
+                const content = document.getElementById('modal-content');
+                const deleteBtn = document.getElementById('delete-btn');
+                const title = document.getElementById('modal-title');
+                
+                // Reset Fields
+                document.getElementById('modal-prop-id').value = propId || '';
+                
+                if (propId) {
+                    const prop = state.properties.find(p => p.id === propId);
+                    state.editingProperty = prop;
+                    title.innerText = '編輯房源';
+                    document.getElementById('input-title').value = prop.title;
+                    document.getElementById('input-area').value = prop.area;
+                    document.getElementById('input-price').value = prop.price;
+                    document.getElementById('input-address').value = prop.address;
+                    document.getElementById('input-link').value = prop.link || '';
+                    document.getElementById('input-note').value = prop.note;
+                    deleteBtn.classList.remove('hidden');
+                } else {
+                    state.editingProperty = null;
+                    title.innerText = '新增房源';
+                    document.getElementById('input-title').value = '';
+                    document.getElementById('input-area').value = '桃園區';
+                    document.getElementById('input-price').value = '';
+                    document.getElementById('input-address').value = '';
+                    document.getElementById('input-link').value = '';
+                    document.getElementById('input-note').value = '';
+                    deleteBtn.classList.add('hidden');
+                }
+
+                modal.classList.remove('hidden');
+                // Simple animation class toggle could go here
+                content.classList.remove('translate-y-full'); 
+            },
+            setAreaFilter: (area) => {
+                state.areaFilter = area;
+                renderContent(); // Re-render browse view
+            }
+        };
+
+        // --- Init Logic ---
+        async function init() {
+            // Populate Modal Select
+            const select = document.getElementById('input-area');
+            state.taoyuanAreas.forEach(area => {
+                const opt = document.createElement('option');
+                opt.value = area;
+                opt.innerText = area;
+                select.appendChild(opt);
+            });
+
+            // Auth
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Auth error", error);
+            }
+
+            onAuthStateChanged(auth, (user) => {
+                state.user = user;
+                if (user) {
+                    document.getElementById('loading-screen').classList.add('hidden');
+                    setupListeners();
+                    renderContent();
+                }
+            });
+        }
+
+        function setupListeners() {
+            if (!state.user) return;
+
+            // Requirements Listener
+            const reqQuery = query(collection(db, 'artifacts', appId, 'public', 'data', 'requirements'));
+            onSnapshot(reqQuery, (snapshot) => {
+                state.requirements = snapshot.docs.map(d => ({id: d.id, ...d.data()}))
+                    .sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                if (state.activeTab === 'home') renderHome();
+            });
+
+            // Properties Listener
+            const propQuery = query(collection(db, 'artifacts', appId, 'public', 'data', 'properties'));
+            onSnapshot(propQuery, (snapshot) => {
+                state.properties = snapshot.docs.map(d => ({id: d.id, ...d.data()}))
+                    .sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                if (state.activeTab !== 'home') renderContent();
+            });
+        }
+
+        // --- UI Rendering ---
+
+        function updateNavUI() {
+            const tabs = ['home', 'browse', 'favorites'];
+            
+            tabs.forEach(t => {
+                const btn = document.getElementById(`nav-${t}`);
+                const icon = btn.querySelector('svg') || btn.querySelector('i');
+                const text = btn.querySelector('span');
+                
+                if (state.activeTab === t) {
+                    // Active State
+                    btn.classList.remove('text-stone-400');
+                    if (t === 'favorites') {
+                        btn.classList.add('text-orange-500');
+                        if(icon) icon.setAttribute('fill', 'currentColor');
+                    } else {
+                        btn.classList.add('text-stone-800');
+                    }
+                    
+                    if (icon) {
+                        icon.classList.add('scale-125', '-translate-y-1');
+                        icon.classList.remove('scale-100', 'translate-y-0');
+                        icon.setAttribute('stroke-width', '2.5');
+                    }
+                    if (text) {
+                        text.classList.add('font-bold');
+                        text.classList.remove('font-medium');
+                    }
+                } else {
+                    // Inactive State
+                    btn.classList.add('text-stone-400');
+                    btn.classList.remove('text-stone-800', 'text-orange-500');
+                    
+                    if (icon) {
+                        if(t === 'favorites') icon.setAttribute('fill', 'none');
+                        icon.classList.remove('scale-125', '-translate-y-1');
+                        icon.classList.add('scale-100', 'translate-y-0');
+                        icon.setAttribute('stroke-width', '2');
+                    }
+                    if (text) {
+                        text.classList.remove('font-bold');
+                        text.classList.add('font-medium');
+                    }
+                }
+            });
+            lucide.createIcons();
+        }
+
+        function renderContent() {
+            const container = document.getElementById('app-content');
+            container.innerHTML = '';
+
+            if (state.activeTab === 'home') renderHome();
+            else if (state.activeTab === 'browse') renderBrowse();
+            else if (state.activeTab === 'favorites') renderFavorites();
+
+            lucide.createIcons();
+        }
+
+        // 1. Home View
+        function renderHome() {
+            const container = document.getElementById('app-content');
+            
+            const html = `
+                <div class="max-w-md mx-auto w-full px-5 py-6">
+                    <header class="mb-8 text-center">
+                        <h1 class="text-2xl font-bold text-stone-800 tracking-tight">桃園租屋筆記</h1>
+                        <p class="text-stone-500 mt-1">規劃我們未來的家</p>
+                    </header>
+
+                    <div class="bg-white p-2 rounded-2xl shadow-sm border border-stone-100 flex gap-2 mb-6">
+                        <input id="new-req-input" placeholder="新增需求 (例如: 要有陽台...)" class="flex-1 px-3 py-2 outline-none text-stone-700 bg-transparent placeholder:text-stone-400">
+                        <button id="add-req-btn" class="bg-stone-800 text-white rounded-xl w-10 h-10 flex items-center justify-center hover:bg-stone-700 active:scale-95 transition-all">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h2 class="text-sm font-bold text-stone-400 uppercase tracking-wider ml-1">我們的需求清單</h2>
+                        ${state.requirements.length === 0 ? `
+                            <div class="text-center py-10 text-stone-400 bg-stone-50 rounded-2xl border-2 border-dashed border-stone-200">
+                                還沒有寫下需求喔
+                            </div>
+                        ` : state.requirements.map(req => `
+                            <div class="group flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-stone-100 hover:border-orange-200 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-green-600/80"></i>
+                                    <span class="text-stone-700 font-medium">${escapeHtml(req.text)}</span>
+                                </div>
+                                <button onclick="app.deleteRequirement('${req.id}')" class="p-2 text-stone-400 hover:text-red-500 transition-all">
+                                    <i data-lucide="x" class="w-[18px] h-[18px]"></i>
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+
+            // Bind Home Events
+            document.getElementById('add-req-btn').onclick = handleAddReq;
+            document.getElementById('new-req-input').onkeydown = (e) => { if(e.key === 'Enter') handleAddReq(); };
+        }
+
+        async function handleAddReq() {
+            const input = document.getElementById('new-req-input');
+            const text = input.value.trim();
+            if(!text) return;
+            
+            input.value = ''; // Optimistic clear
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'requirements'), {
+                text: text,
+                createdAt: serverTimestamp()
+            });
+        }
+
+        // 2. Browse View
+        function renderBrowse() {
+            const container = document.getElementById('app-content');
+            
+            // Filter Logic
+            let list = state.properties;
+            if (state.areaFilter !== '全部') {
+                list = list.filter(p => p.area === state.areaFilter);
+            }
+
+            const html = `
+                <div class="max-w-md mx-auto w-full px-4 py-6 pb-24">
+                    <header class="flex justify-between items-center mb-6">
+                        <h1 class="text-2xl font-bold text-stone-800">搜尋房源</h1>
+                        <button onclick="app.openModal()" class="flex items-center gap-1 bg-stone-800 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-stone-700 active:scale-95 transition-all">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            新增
+                        </button>
+                    </header>
+
+                    <div class="flex gap-2 overflow-x-auto pb-4 mb-2 no-scrollbar">
+                        <button onclick="app.setAreaFilter('全部')" class="flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${state.areaFilter === '全部' ? 'bg-stone-800 text-white shadow-md' : 'bg-white text-stone-600 border border-stone-200'}">全部</button>
+                        ${state.taoyuanAreas.map(area => `
+                            <button onclick="app.setAreaFilter('${area}')" class="flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${state.areaFilter === area ? 'bg-stone-800 text-white shadow-md' : 'bg-white text-stone-600 border border-stone-200'}">${area}</button>
+                        `).join('')}
+                    </div>
+
+                    <div class="grid gap-1">
+                        ${list.length === 0 ? `
+                            <div class="text-center py-20">
+                                <div class="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i data-lucide="search" class="text-stone-400"></i>
+                                </div>
+                                <p class="text-stone-500">這個區域還沒有資料</p>
+                            </div>
+                        ` : list.map(p => createPropertyCard(p)).join('')}
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        // 3. Favorites View
+        function renderFavorites() {
+            const container = document.getElementById('app-content');
+            const list = state.properties.filter(p => p.isFavorite);
+
+            const html = `
+                <div class="max-w-md mx-auto w-full px-4 py-6 pb-24">
+                    <header class="mb-6">
+                        <h1 class="text-2xl font-bold text-stone-800 flex items-center gap-2">
+                            我的收藏
+                            <i data-lucide="heart" class="text-orange-500 fill-orange-500 w-6 h-6"></i>
+                        </h1>
+                        <p class="text-stone-500 mt-1">心動的清單 (${list.length})</p>
+                    </header>
+
+                    <div class="grid gap-1">
+                        ${list.length === 0 ? `
+                            <div class="text-center py-20 bg-white rounded-3xl border border-dashed border-stone-200 mx-4">
+                                <p class="text-stone-400">還沒有收藏任何房子喔</p>
+                                <button onclick="app.switchTab('browse')" class="mt-4 text-orange-600 font-medium hover:underline">去逛逛</button>
+                            </div>
+                        ` : list.map(p => createPropertyCard(p)).join('')}
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        // Helper: Card Generator
+        function createPropertyCard(p) {
+            // New logic: Check if link exists for the second button
+            const linkButton = p.link ? `
+                <button onclick="event.stopPropagation(); window.open('${escapeHtml(p.link)}', '_blank')" class="flex-1 flex items-center justify-center gap-1 py-2 rounded-xl bg-orange-50 text-orange-700 text-sm font-medium hover:bg-orange-100 transition-colors">
+                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                    連結
+                </button>
+            ` : `
+                <button disabled class="flex-1 flex items-center justify-center gap-1 py-2 rounded-xl bg-stone-50 text-stone-300 text-sm font-medium cursor-not-allowed">
+                    暫無連結
+                </button>
+            `;
+
+            return `
+                <div onclick="app.openModal('${p.id}')" class="bg-white rounded-2xl p-4 mb-4 shadow-sm border border-stone-100 cursor-pointer hover:shadow-md transition-all active:scale-[0.99] group">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="inline-block px-2 py-1 bg-stone-100 text-stone-600 text-xs rounded-full font-medium">${p.area}</span>
+                        <button onclick="event.stopPropagation(); app.toggleFavorite('${p.id}', ${p.isFavorite})" class="p-2 rounded-full transition-colors ${p.isFavorite ? 'bg-orange-50 text-orange-500' : 'text-stone-300 hover:bg-stone-50'}">
+                            <i data-lucide="heart" class="w-5 h-5" ${p.isFavorite ? 'fill="currentColor"' : ''}></i>
+                        </button>
+                    </div>
+                    
+                    <h3 class="text-lg font-bold text-stone-800 mb-1">${escapeHtml(p.title)}</h3>
+                    <p class="text-orange-600 font-bold text-xl mb-2">
+                        $${p.price.toLocaleString()}<span class="text-sm font-normal text-stone-500">/月</span>
+                    </p>
+                    
+                    <div class="flex items-center text-stone-500 text-sm mb-3">
+                        <i data-lucide="map-pin" class="w-[14px] h-[14px] mr-1 flex-shrink-0"></i>
+                        <span class="truncate">${escapeHtml(p.address || "暫無地址")}</span>
+                    </div>
+
+                    <div class="flex gap-2 mt-3 pt-3 border-t border-stone-100">
+                        <button onclick="event.stopPropagation(); app.openMap('${escapeHtml(p.address)}')" class="flex-1 flex items-center justify-center gap-1 py-2 rounded-xl bg-stone-50 text-stone-600 text-sm font-medium hover:bg-stone-100 transition-colors">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i>
+                            地圖
+                        </button>
+                        ${linkButton}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Modal Events ---
+        document.getElementById('close-modal-btn').onclick = () => {
+            document.getElementById('modal-overlay').classList.add('hidden');
+        };
+
+        document.getElementById('modal-overlay').onclick = (e) => {
+            if (e.target.id === 'modal-overlay') {
+                document.getElementById('modal-overlay').classList.add('hidden');
+            }
+        };
+
+        document.getElementById('save-btn').onclick = async () => {
+            const title = document.getElementById('input-title').value;
+            const area = document.getElementById('input-area').value;
+            const price = document.getElementById('input-price').value;
+            const address = document.getElementById('input-address').value;
+            const link = document.getElementById('input-link').value;
+            const note = document.getElementById('input-note').value;
+            const propId = document.getElementById('modal-prop-id').value;
+
+            if(!title || !price) return;
+
+            const payload = {
+                title, area, price: Number(price), address, link, note,
+                isFavorite: state.editingProperty ? state.editingProperty.isFavorite : false,
+                createdAt: state.editingProperty ? state.editingProperty.createdAt : serverTimestamp()
+            };
+
+            if (propId) {
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'properties', propId), payload);
+            } else {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'properties'), payload);
+            }
+            document.getElementById('modal-overlay').classList.add('hidden');
+        };
+
+        document.getElementById('delete-btn').onclick = async () => {
+            if(!confirm('確定要刪除這個租屋資訊嗎？')) return;
+            const propId = document.getElementById('modal-prop-id').value;
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'properties', propId));
+            document.getElementById('modal-overlay').classList.add('hidden');
+        };
+
+        // Util
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Start
+        init();
+        updateNavUI();
+    </script>
+</body>
+</html>
