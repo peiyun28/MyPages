@@ -76,7 +76,7 @@
     <!-- Main Content Area -->
     <main id="app-content" class="pb-24 animate-fade-in hidden"></main>
 
-    <!-- (這是您缺少的部分 1) 詳細資訊視窗 Detail View Modal -->
+    <!-- 詳細資訊視窗 Detail View Modal -->
     <div id="detail-overlay" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-stone-900/40 backdrop-blur-sm p-4 hidden">
         <div id="detail-content" class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl transform transition-transform duration-300 translate-y-full sm:translate-y-0 relative">
             
@@ -92,7 +92,7 @@
                 </button>
             </div>
 
-            <!-- (這是您缺少的部分 2) 右上角編輯按鈕 -->
+            <!-- 右上角編輯按鈕 -->
             <button id="detail-edit-btn" class="absolute top-6 right-20 p-2 text-stone-400 hover:text-stone-700 hover:bg-stone-50 rounded-full transition-all" title="編輯房源">
                 <i data-lucide="pencil" class="w-5 h-5"></i>
             </button>
@@ -397,7 +397,7 @@
                 });
             },
             
-            // (這是您缺少的部分 3) 開啟詳細資訊視窗的邏輯
+            // 開啟詳細資訊視窗的邏輯
             openDetail: (propId) => {
                 const prop = state.properties.find(p => p.id === propId);
                 if(!prop) return;
@@ -535,7 +535,9 @@
 
                     <div class="bg-white p-2 rounded-2xl shadow-sm border border-stone-100 flex gap-2 mb-6">
                         <input id="new-req-input" placeholder="要 有 洗 衣 機" class="flex-1 px-3 py-2 outline-none text-stone-700 bg-transparent placeholder:text-stone-400">
-                        
+                        <button id="add-req-btn">
+                            
+                        </button>
                     </div>
 
                     <div class="space-y-3">
@@ -566,8 +568,8 @@
                                         <i data-lucide="check-circle-2" class="w-5 h-5 text-green-600/80 flex-shrink-0"></i>
                                         <span class="text-stone-700 font-medium truncate">${escapeHtml(req.text)}</span>
                                     </div>
-                                    <div class="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                                        <button onclick="app.startReqEdit('${req.id}')" class="p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-50 rounded-xl transition-all" title="編輯">
+                                    <div class="flex items-center gap-1">
+                                            <button onclick="app.startReqEdit('${req.id}')" class="p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-50 rounded-xl transition-all" title="編輯">
                                             <i data-lucide="pencil" class="w-4 h-4"></i>
                                         </button>
                                         <button onclick="app.deleteRequirement('${req.id}')" class="p-2 text-stone-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all" title="刪除">
@@ -667,7 +669,7 @@
 
         function createPropertyCard(p) {
             return `
-                <!-- (這是您缺少的部分 4) 這裡要呼叫 openDetail，而不是 openModal -->
+                <!-- 這裡要呼叫 openDetail，而不是 openModal -->
                 <div onclick="app.openDetail('${p.id}')" class="bg-white rounded-2xl p-4 mb-4 shadow-sm border border-stone-100 cursor-pointer hover:shadow-md transition-all active:scale-[0.99] group">
                     <div class="flex justify-between items-start mb-2">
                         <span class="inline-block px-2 py-1 bg-stone-100 text-stone-600 text-xs rounded-full font-medium">${p.area}</span>
@@ -704,7 +706,7 @@
             document.getElementById('modal-overlay').classList.add('hidden');
         };
         
-        // (這是您缺少的部分 5) 詳細視窗的關閉事件
+        // 詳細視窗的關閉事件
         document.getElementById('close-detail-btn').onclick = () => {
             document.getElementById('detail-overlay').classList.add('hidden');
         };
@@ -715,7 +717,7 @@
             }
         };
         
-        // (這是您缺少的部分 6) 詳細視窗遮罩關閉
+        // 詳細視窗遮罩關閉
         document.getElementById('detail-overlay').onclick = (e) => {
             if (e.target.id === 'detail-overlay') {
                 document.getElementById('detail-overlay').classList.add('hidden');
