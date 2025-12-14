@@ -440,7 +440,7 @@
                 if (propId) {
                     const prop = state.properties.find(p => p.id === propId);
                     state.editingProperty = prop;
-                    title.innerText = '編輯房源';
+                    title.innerText = '編 輯 房 源';
                     document.getElementById('input-title').value = prop.title;
                     document.getElementById('input-area').value = prop.area;
                     document.getElementById('input-price').value = prop.price;
@@ -450,7 +450,7 @@
                     deleteBtn.classList.remove('hidden');
                 } else {
                     state.editingProperty = null;
-                    title.innerText = '新增房源';
+                    title.innerText = '新 增 房 源';
                     document.getElementById('input-title').value = '';
                     document.getElementById('input-area').value = '中壢區';
                     document.getElementById('input-price').value = '';
