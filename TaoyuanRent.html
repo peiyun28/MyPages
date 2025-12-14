@@ -117,7 +117,7 @@
                 <div id="detail-link-section" class="hidden">
                     <a id="detail-link" href="#" target="_blank" class="flex items-center gap-2 p-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors font-medium text-sm">
                         <i data-lucide="link" class="w-4 h-4 flex-shrink-0"></i>
-                        <span class="truncate">開 啟 連 結</span>
+                        <span class="truncate">前 往 連 結</span>
                         <i data-lucide="external-link" class="w-3 h-3 ml-auto opacity-50"></i>
                     </a>
                 </div>
@@ -466,6 +466,11 @@
             setAreaFilter: (area) => {
                 state.areaFilter = area;
                 renderContent();
+            },
+            // 設定排序順序的函式
+            setSortOrder: (order) => {
+                state.sortOrder = order;
+                renderContent();
             }
         };
 
@@ -603,9 +608,16 @@
 
         function renderBrowse() {
             const container = document.getElementById('app-content');
-            let list = state.properties;
+            // 複製一份陣列以免影響原始資料，並加入篩選
+            let list = [...state.properties]; 
             if (state.areaFilter !== '全部') {
                 list = list.filter(p => p.area === state.areaFilter);
+            }
+            // 排序邏輯
+            if (state.sortOrder === 'asc') {
+                list.sort((a, b) => a.price - b.price);
+            } else if (state.sortOrder === 'desc') {
+                list.sort((a, b) => b.price - a.price);
             }
 
             const html = `
@@ -623,6 +635,19 @@
                         ${state.taoyuanAreas.map(area => `
                             <button onclick="app.setAreaFilter('${area}')" class="flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${state.areaFilter === area ? 'bg-stone-800 text-white shadow-md' : 'bg-white text-stone-600 border border-stone-200'}">${area}</button>
                         `).join('')}
+                    </div>
+
+                    <!-- 統計與排序區塊 -->
+                    <div class="flex justify-between items-center mb-4 px-1">
+                        <p class="text-stone-500 font-medium text-sm">共 (${list.length}) 筆 資 料</p>
+                        <div class="relative">
+                            <select onchange="app.setSortOrder(this.value)" class="appearance-none bg-white border border-stone-200 text-stone-600 text-sm font-medium pl-3 pr-8 py-1.5 rounded-lg focus:outline-none focus:border-stone-400 transition-colors cursor-pointer">
+                                <option value="default" ${state.sortOrder === 'default' ? 'selected' : ''}>最 新 發 佈</option>
+                                <option value="asc" ${state.sortOrder === 'asc' ? 'selected' : ''}>租 金：低 → 高</option>
+                                <option value="desc" ${state.sortOrder === 'desc' ? 'selected' : ''}>租 金：高 → 低</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400 pointer-events-none"></i>
+                        </div>
                     </div>
 
                     <div class="grid gap-1">
@@ -693,9 +718,8 @@
                             <i data-lucide="map-pin" class="w-4 h-4"></i>
                             地 圖
                         </button>
-                        <!-- 按鈕文字改為 "詳細" -->
                         <button class="flex-1 flex items-center justify-center gap-1 py-2 rounded-xl bg-orange-50 text-orange-700 text-sm font-medium hover:bg-orange-100 transition-colors">
-                            詳 細
+                            內 容
                         </button>
                     </div>
                 </div>
