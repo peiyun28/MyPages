@@ -239,14 +239,14 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // --- App State ---
+        // 桃園區域選單
         const state = {
             user: null,
             activeTab: 'home',
             requirements: [],
             properties: [],
-            areaFilter: '全部',
-            taoyuanAreas: ['桃園區', '中壢區', '蘆竹區', '大園區'],
+            areaFilter: '全 部',
+            taoyuanAreas: ['桃 園 區', '中 壢 區', '蘆 竹 區', '大 園 區'],
             editingProperty: null,
             editingReqId: null
         };
@@ -274,7 +274,7 @@
              firebaseConfig = userProvidedConfig;
         }
 
-        // --- Init Logic ---
+        // Init Logic
         async function init() {
             if (!firebaseConfig.apiKey) {
                 document.getElementById('loading-spinner').classList.add('hidden');
@@ -302,7 +302,7 @@
                 }
             } catch (error) {
                 console.error("Auth error", error);
-                alert("連線錯誤: " + error.message + "\n請檢查您的 Firebase 設定是否正確，並確認已開啟 Anonymous Authentication (匿名登入)。");
+                alert("連 線 錯 誤：" + error.message + "\n請檢查您的 Firebase 設定是否正確，並確認已開啟 Anonymous Authentication");
             }
 
             onAuthStateChanged(window.auth, (user) => {
@@ -378,7 +378,7 @@
                         renderHome();
                         lucide.createIcons();
                     } catch (error) {
-                        alert("修改失敗: " + error.message);
+                        alert("修 改 失 敗：" + error.message);
                     }
                 }
             },
@@ -387,7 +387,7 @@
                 try {
                     await deleteDoc(doc(window.db, 'artifacts', appId, 'public', 'data', 'requirements', id));
                 } catch (error) {
-                    alert("刪除失敗: " + error.message);
+                    alert("刪 除 失 敗：" + error.message);
                 }
             },
             toggleFavorite: async (id, currentVal) => {
@@ -397,7 +397,7 @@
                 });
             },
             
-            // 開啟詳細資訊視窗的邏輯
+            // 開啟內容視窗的邏輯
             openDetail: (propId) => {
                 const prop = state.properties.find(p => p.id === propId);
                 if(!prop) return;
@@ -452,7 +452,7 @@
                     state.editingProperty = null;
                     title.innerText = '新 增 房 源';
                     document.getElementById('input-title').value = '';
-                    document.getElementById('input-area').value = '中壢區';
+                    document.getElementById('input-area').value = '中 壢 區';
                     document.getElementById('input-price').value = '';
                     document.getElementById('input-address').value = '';
                     document.getElementById('input-link').value = '';
@@ -610,7 +610,7 @@
             const container = document.getElementById('app-content');
             // 複製一份陣列以免影響原始資料，並加入篩選
             let list = [...state.properties]; 
-            if (state.areaFilter !== '全部') {
+            if (state.areaFilter !== '全 部') {
                 list = list.filter(p => p.area === state.areaFilter);
             }
             // 排序邏輯
@@ -631,7 +631,7 @@
                     </header>
 
                     <div class="flex gap-2 overflow-x-auto pb-4 mb-2 no-scrollbar">
-                        <button onclick="app.setAreaFilter('全部')" class="flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${state.areaFilter === '全部' ? 'bg-stone-800 text-white shadow-md' : 'bg-white text-stone-600 border border-stone-200'}">全部</button>
+                        <button onclick="app.setAreaFilter('全 部')" class="flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${state.areaFilter === '全 部' ? 'bg-stone-800 text-white shadow-md' : 'bg-white text-stone-600 border border-stone-200'}">全 部</button>
                         ${state.taoyuanAreas.map(area => `
                             <button onclick="app.setAreaFilter('${area}')" class="flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${state.areaFilter === area ? 'bg-stone-800 text-white shadow-md' : 'bg-white text-stone-600 border border-stone-200'}">${area}</button>
                         `).join('')}
