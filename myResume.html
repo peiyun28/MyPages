@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>許珮筠 | 個人作品集</title>
+    <meta name="description" content="許珮筠的個人作品集 - 應徵航空地勤人員">
+    
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 設定字體 -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        /* 隱藏滾動條但保持功能 (Optional) */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+
+    <!-- 引入 Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-sky-200 selection:text-sky-900">
+
+    <!-- 導航列 -->
+    <nav id="navbar" class="fixed top-0 w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo / Name -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="scrollToSection('home')">
+                    <span class="text-2xl font-bold text-sky-600 tracking-wider">PEI-YUN</span>
+                </div>
+                
+                <!-- 電腦版選單 -->
+                <div class="hidden md:flex space-x-8">
+                    <button onclick="scrollToSection('about')" class="nav-link text-sm font-medium text-slate-500 hover:text-sky-600 transition-colors duration-200" data-target="about">關於我</button>
+                    <button onclick="scrollToSection('education')" class="nav-link text-sm font-medium text-slate-500 hover:text-sky-600 transition-colors duration-200" data-target="education">學歷背景</button>
+                    <button onclick="scrollToSection('experience')" class="nav-link text-sm font-medium text-slate-500 hover:text-sky-600 transition-colors duration-200" data-target="experience">工作經歷</button>
+                    <button onclick="scrollToSection('skills')" class="nav-link text-sm font-medium text-slate-500 hover:text-sky-600 transition-colors duration-200" data-target="skills">專業技能</button>
+                    <button onclick="scrollToSection('contact')" class="nav-link text-sm font-medium text-slate-500 hover:text-sky-600 transition-colors duration-200" data-target="contact">聯絡方式</button>
+                </div>
+
+                <!-- 手機版選單按鈕 -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-500 hover:text-sky-600 focus:outline-none p-2">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 手機版下拉選單 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg absolute w-full border-t border-slate-100">
+            <div class="px-4 pt-2 pb-4 space-y-1">
+                <button onclick="scrollToSection('about')" class="block w-full text-left px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-sky-600 hover:bg-sky-50 transition">關於我</button>
+                <button onclick="scrollToSection('education')" class="block w-full text-left px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-sky-600 hover:bg-sky-50 transition">學歷背景</button>
+                <button onclick="scrollToSection('experience')" class="block w-full text-left px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-sky-600 hover:bg-sky-50 transition">工作經歷</button>
+                <button onclick="scrollToSection('skills')" class="block w-full text-left px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-sky-600 hover:bg-sky-50 transition">專業技能</button>
+                <button onclick="scrollToSection('contact')" class="block w-full text-left px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:text-sky-600 hover:bg-sky-50 transition">聯絡方式</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section (首頁) -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-100 via-white to-sky-50 overflow-hidden pt-16">
+        <!-- 裝飾背景 -->
+        <div class="absolute top-20 right-10 opacity-10 animate-pulse pointer-events-none">
+           <i data-lucide="plane" class="w-[300px] h-[300px] text-sky-400 transform rotate-12"></i>
+        </div>
+        
+        <div class="max-w-4xl mx-auto px-4 text-center z-10 relative">
+            <div class="mb-8 inline-block p-1 rounded-full bg-sky-100 border border-sky-200 shadow-sm">
+                <div class="h-32 w-32 md:h-40 md:w-40 rounded-full bg-white flex items-center justify-center overflow-hidden mx-auto shadow-inner">
+                   <!-- 如果有照片，請將下方的 svg 替換為 <img src="your-photo.jpg" class="w-full h-full object-cover"> -->
+                   <i data-lucide="user" class="w-16 h-16 md:w-20 md:h-20 text-sky-300"></i>
+                </div>
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl font-bold text-slate-800 mb-4 tracking-tight">
+                許珮筠 <span class="text-sky-600 block md:inline mt-2 md:mt-0">Hsu Pei Yun</span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-slate-600 mb-10 font-light max-w-2xl mx-auto">
+                資訊工程背景的細心觀察者<br class="md:hidden" /> • 致力於成為溫暖專業的地勤人員
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="scrollToSection('contact')" class="group px-8 py-3 bg-sky-600 text-white rounded-full font-medium hover:bg-sky-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                    <i data-lucide="mail" class="w-5 h-5 group-hover:scale-110 transition-transform"></i> 聯繫我
+                </button>
+                <button onclick="scrollToSection('about')" class="group px-8 py-3 bg-white text-sky-600 border border-sky-200 rounded-full font-medium hover:bg-sky-50 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                    了解更多 <i data-lucide="chevron-down" class="w-5 h-5 group-hover:translate-y-1 transition-transform"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 底部波浪裝飾 -->
+        <div class="absolute bottom-0 w-full text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="w-full h-auto">
+                <path fill="#ffffff" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- 關於我 -->
+    <section id="about" class="py-20 bg-white">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-800 inline-block border-b-4 border-sky-400 pb-2">關於我</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6 text-lg text-slate-600 leading-relaxed text-justify">
+                    <p>
+                        您好，我是許珮筠，來自台中市。畢業於<span class="font-bold text-sky-700 bg-sky-50 px-1 rounded">國立金門大學資訊工程學系</span>。
+                    </p>
+                    <p>
+                        我的個性雖然較為慢熟，但也因此培養了<span class="font-bold text-slate-800">謹慎細心</span>的特質。面對陌生的挑戰，我總是先觀察、學習，再以最穩健的方式處理。
+                    </p>
+                    <p>
+                        在學期間，我不僅在系學會擔任活動組長，學習跨部門溝通與團隊協作；也在衛生所擔任社群小編，將生硬的知識轉化為長輩能懂的語言。這些經歷讓我明白，我有能力也有熱忱，能成為團隊中那個可靠、溫暖的夥伴。
+                    </p>
+                    <p>
+                        雖然擁有理工背景，但我發現自己更熱愛與人互動、解決問題。我期盼能將這份細心與邏輯能力，運用在航空地勤的領域，為每一位旅客提供最優質的服務。
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-6 bg-sky-50 rounded-xl text-center hover:shadow-lg hover:-translate-y-1 transition duration-300 border border-sky-100">
+                        <i data-lucide="users" class="w-10 h-10 text-sky-500 mx-auto mb-3"></i>
+                        <h3 class="font-bold text-slate-800 text-lg">團隊協作</h3>
+                        <p class="text-sm text-slate-500 mt-1">系學會活動組長經驗</p>
+                    </div>
+                    <div class="p-6 bg-sky-50 rounded-xl text-center hover:shadow-lg hover:-translate-y-1 transition duration-300 border border-sky-100">
+                        <i data-lucide="heart" class="w-10 h-10 text-pink-500 mx-auto mb-3"></i>
+                        <h3 class="font-bold text-slate-800 text-lg">服務熱忱</h3>
+                        <p class="text-sm text-slate-500 mt-1">衛生所與餐飲服務</p>
+                    </div>
+                    <div class="p-6 bg-sky-50 rounded-xl text-center hover:shadow-lg hover:-translate-y-1 transition duration-300 border border-sky-100">
+                        <i data-lucide="award" class="w-10 h-10 text-yellow-500 mx-auto mb-3"></i>
+                        <h3 class="font-bold text-slate-800 text-lg">持續學習</h3>
+                        <p class="text-sm text-slate-500 mt-1">多張專業證照</p>
+                    </div>
+                    <div class="p-6 bg-sky-50 rounded-xl text-center hover:shadow-lg hover:-translate-y-1 transition duration-300 border border-sky-100">
+                        <i data-lucide="briefcase" class="w-10 h-10 text-indigo-500 mx-auto mb-3"></i>
+                        <h3 class="font-bold text-slate-800 text-lg">抗壓性佳</h3>
+                        <p class="text-sm text-slate-500 mt-1">面對突發冷靜應對</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 學歷背景 -->
+    <section id="education" class="py-20 bg-slate-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-800 inline-block border-b-4 border-sky-400 pb-2">學歷背景</h2>
+            </div>
+
+            <div class="space-y-6">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border-l-4 border-sky-500 flex flex-col md:flex-row justify-between items-start md:items-center hover:shadow-md transition duration-300 group">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800 flex items-center gap-3">
+                            <i data-lucide="graduation-cap" class="text-sky-600 w-6 h-6 group-hover:scale-110 transition-transform"></i> 
+                            國立金門大學
+                        </h3>
+                        <p class="text-slate-600 mt-2 pl-9">資訊工程學系 | 學士學位</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 ml-9 md:ml-0 bg-sky-50 text-sky-800 px-4 py-1.5 rounded-full text-sm font-medium border border-sky-100">
+                        2021/9 - 2025/6
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-2xl shadow-sm border-l-4 border-slate-300 flex flex-col md:flex-row justify-between items-start md:items-center hover:shadow-md transition duration-300 group">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800 flex items-center gap-3">
+                            <i data-lucide="graduation-cap" class="text-slate-400 w-6 h-6 group-hover:scale-110 transition-transform"></i> 
+                            臺中市立大甲高級中等學校
+                        </h3>
+                        <p class="text-slate-600 mt-2 pl-9">普通科</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 ml-9 md:ml-0 bg-slate-100 text-slate-600 px-4 py-1.5 rounded-full text-sm font-medium border border-slate-200">
+                        2018/9 - 2021/6
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工作經歷 Timeline -->
+    <section id="experience" class="py-20 bg-white">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-800 inline-block border-b-4 border-sky-400 pb-2">工作經歷</h2>
+            </div>
+
+            <div class="relative border-l-2 border-slate-200 ml-4 md:ml-10 space-y-16">
+                
+                <!-- Job 1 -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <div class="absolute -left-[9px] top-0 h-5 w-5 rounded-full bg-white border-4 border-sky-500 shadow-sm group-hover:scale-125 transition-transform duration-300"></div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
+                        <h3 class="text-2xl font-bold text-slate-800 group-hover:text-sky-600 transition-colors">工讀生/社群小編</h3>
+                        <span class="text-sm text-sky-700 font-semibold bg-sky-50 px-3 py-1 rounded-full mt-2 sm:mt-0 w-fit border border-sky-100">2025/3 - 2025/11</span>
+                    </div>
+                    <h4 class="text-lg text-slate-500 font-medium mb-4 flex items-center gap-2">
+                        <i data-lucide="map-pin" class="w-4 h-4"></i> 金湖鎮衛生所
+                    </h4>
+                    <div class="bg-slate-50 p-6 rounded-xl hover:bg-sky-50/50 transition-colors">
+                        <ul class="list-disc list-outside text-slate-600 space-y-2 ml-4">
+                            <li><span class="font-semibold text-slate-700">社群經營與內容製作：</span>將公共衛生議題（如三高、癌症篩檢）轉化為長輩易懂的圖像與貼文，有效提升健檢參與度。</li>
+                            <li><span class="font-semibold text-slate-700">活動支援與紀錄：</span>協助社區活動拍攝、資料整理及獎勵發放，提升社區長輩參與意願。</li>
+                            <li>培養了將複雜資訊「轉譯」為簡單語言的能力，以及對長者的耐心與關懷。</li>
+                        </ul>
+                        <div class="mt-4 flex gap-2 flex-wrap pt-2 border-t border-slate-200/60">
+                            <span class="text-xs text-slate-500 bg-white border border-slate-200 px-2 py-1 rounded shadow-sm">#內容製作</span>
+                            <span class="text-xs text-slate-500 bg-white border border-slate-200 px-2 py-1 rounded shadow-sm">#圖文設計</span>
+                            <span class="text-xs text-slate-500 bg-white border border-slate-200 px-2 py-1 rounded shadow-sm">#活動拍攝</span>
+                            <span class="text-xs text-slate-500 bg-white border border-slate-200 px-2 py-1 rounded shadow-sm">#社群經營</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job 2 -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <div class="absolute -left-[9px] top-0 h-5 w-5 rounded-full bg-white border-4 border-slate-400 shadow-sm group-hover:scale-125 transition-transform duration-300"></div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
+                        <h3 class="text-2xl font-bold text-slate-800 group-hover:text-slate-600 transition-colors">工讀生</h3>
+                        <span class="text-sm text-slate-500 font-semibold bg-slate-100 px-3 py-1 rounded-full mt-2 sm:mt-0 w-fit">2024/7 - 2025/6</span>
+                    </div>
+                    <h4 class="text-lg text-slate-500 font-medium mb-4 flex items-center gap-2">
+                        <i data-lucide="map-pin" class="w-4 h-4"></i> 叁食雞蛋糕
+                    </h4>
+                    <div class="bg-slate-50 p-6 rounded-xl hover:bg-slate-100/50 transition-colors">
+                        <ul class="list-disc list-outside text-slate-600 space-y-2 ml-4">
+                            <li><span class="font-semibold text-slate-700">顧客接待與互動：</span>負責第一線顧客點餐、解說與互動，培養應對進退的禮儀。</li>
+                            <li><span class="font-semibold text-slate-700">現場製作與出餐：</span>協助市集攤位營運，即使在人潮眾多時也能保持冷靜、維持出餐品質。</li>
+                            <li>協助側拍活動素材與影片剪輯。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Job 3 -->
+                <div class="relative pl-8 md:pl-12 group">
+                    <div class="absolute -left-[9px] top-0 h-5 w-5 rounded-full bg-white border-4 border-slate-400 shadow-sm group-hover:scale-125 transition-transform duration-300"></div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
+                        <h3 class="text-2xl font-bold text-slate-800 group-hover:text-slate-600 transition-colors">系學會活動組長</h3>
+                        <span class="text-sm text-slate-500 font-semibold bg-slate-100 px-3 py-1 rounded-full mt-2 sm:mt-0 w-fit">2022/9 - 2023/6</span>
+                    </div>
+                    <h4 class="text-lg text-slate-500 font-medium mb-4 flex items-center gap-2">
+                        <i data-lucide="map-pin" class="w-4 h-4"></i> 國立金門大學 資訊工程學系
+                    </h4>
+                    <div class="bg-slate-50 p-6 rounded-xl hover:bg-slate-100/50 transition-colors">
+                        <ul class="list-disc list-outside text-slate-600 space-y-2 ml-4">
+                            <li><span class="font-semibold text-slate-700">活動統籌：</span>規劃聯合迎新、聖誕晚會、期末系烤等大型活動。撰寫企劃書與流程表。</li>
+                            <li><span class="font-semibold text-slate-700">團隊領導與跨組協調：</span>分配組員工作，與美宣、總務等組別溝通，確保活動順利進行。</li>
+                            <li><span class="font-semibold text-slate-700">危機處理：</span>在活動中面對突發狀況時，能冷靜判斷並解決問題。</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 技能與證照 -->
+    <section id="skills" class="py-20 bg-slate-50">
+         <div class="max-w-5xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-800 inline-block border-b-4 border-sky-400 pb-2">技能與證照</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- 語言能力 -->
+                <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition duration-300 border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                        <span class="w-1.5 h-8 bg-yellow-400 rounded-full"></span> 語言能力
+                    </h3>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium text-slate-700">英文 (TOEIC)</span>
+                                <span class="text-sm text-slate-500 bg-slate-100 px-2 py-0.5 rounded">聽: 中等 / 讀: 中等</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                                <div class="bg-sky-500 h-3 rounded-full transition-all duration-1000 w-[60%]"></div>
+                            </div>
+                        </div>
+                        <div>
+                           <div class="flex justify-between mb-2">
+                                <span class="font-medium text-slate-700">中文</span>
+                                <span class="text-sm text-slate-500 bg-slate-100 px-2 py-0.5 rounded">精通 (母語)</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                                <div class="bg-sky-500 h-3 rounded-full transition-all duration-1000 w-[100%]"></div>
+                            </div>
+                        </div>
+                        <div>
+                           <div class="flex justify-between mb-2">
+                                <span class="font-medium text-slate-700">台語</span>
+                                <span class="text-sm text-slate-500 bg-slate-100 px-2 py-0.5 rounded">流利</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                                <div class="bg-sky-500 h-3 rounded-full transition-all duration-1000 w-[85%]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 證照列表 -->
+                 <div class="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition duration-300 border border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                        <span class="w-1.5 h-8 bg-green-400 rounded-full"></span> 專業證照
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-2 bg-slate-50 text-slate-700 rounded-lg text-sm border border-slate-200 hover:border-sky-300 hover:text-sky-700 hover:bg-sky-50 transition cursor-default">丙級電腦硬體裝修技術士</span>
+                        <span class="px-3 py-2 bg-slate-50 text-slate-700 rounded-lg text-sm border border-slate-200 hover:border-sky-300 hover:text-sky-700 hover:bg-sky-50 transition cursor-default">TQC-OA 雲端技術及網路服務</span>
+                        <span class="px-3 py-2 bg-slate-50 text-slate-700 rounded-lg text-sm border border-slate-200 hover:border-sky-300 hover:text-sky-700 hover:bg-sky-50 transition cursor-default">TQC-OA 中文/英文輸入</span>
+                        <span class="px-3 py-2 bg-slate-50 text-slate-700 rounded-lg text-sm border border-slate-200 hover:border-sky-300 hover:text-sky-700 hover:bg-sky-50 transition cursor-default">TQC-DK 電子商務概論</span>
+                        <span class="px-3 py-2 bg-slate-50 text-slate-700 rounded-lg text-sm border border-slate-200 hover:border-sky-300 hover:text-sky-700 hover:bg-sky-50 transition cursor-default">ITS 網路安全管理核心能力</span>
+                        <span class="px-3 py-2 bg-slate-50 text-slate-700 rounded-lg text-sm border border-slate-200 hover:border-sky-300 hover:text-sky-700 hover:bg-sky-50 transition cursor-default">普通小型車駕照</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 聯絡方式 -->
+    <section id="contact" class="py-20 bg-gradient-to-t from-sky-900 to-slate-800 text-white relative overflow-hidden">
+        <!-- 背景裝飾 -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden opacity-10 pointer-events-none">
+             <i data-lucide="plane" class="absolute -top-10 -right-10 w-96 h-96 text-white transform rotate-45"></i>
+        </div>
+
+        <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+            <h2 class="text-3xl font-bold mb-8">聯絡方式</h2>
+            <p class="text-sky-200 mb-12 max-w-2xl mx-auto text-lg">
+                感謝您撥冗閱讀我的履歷。若有任何工作機會或疑問，歡迎隨時透過以下方式聯繫我，期待有機會能親自與您面談。
+            </p>
+            
+            <div class="grid md:grid-cols-3 gap-6 text-center md:text-left justify-items-center md:justify-items-stretch">
+                <a href="tel:0906660328" class="group flex flex-col items-center p-8 bg-white/10 rounded-2xl backdrop-blur-sm hover:bg-white/20 transition duration-300 border border-white/10 hover:border-white/30 w-full">
+                    <div class="bg-sky-500/20 p-4 rounded-full mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="phone" class="w-8 h-8 text-sky-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2 text-white">電話</h3>
+                    <p class="text-sky-100 group-hover:text-white transition-colors">0906-660-328</p>
+                </a>
+                
+                <a href="mailto:peggy032833@gmail.com" class="group flex flex-col items-center p-8 bg-white/10 rounded-2xl backdrop-blur-sm hover:bg-white/20 transition duration-300 border border-white/10 hover:border-white/30 w-full">
+                    <div class="bg-sky-500/20 p-4 rounded-full mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="mail" class="w-8 h-8 text-sky-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2 text-white">Email</h3>
+                    <p class="text-sky-100 group-hover:text-white transition-colors">peggy032833@gmail.com</p>
+                </a>
+
+                <div class="group flex flex-col items-center p-8 bg-white/10 rounded-2xl backdrop-blur-sm hover:bg-white/20 transition duration-300 border border-white/10 hover:border-white/30 w-full cursor-default">
+                    <div class="bg-sky-500/20 p-4 rounded-full mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="map-pin" class="w-8 h-8 text-sky-400"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2 text-white">居住地</h3>
+                    <p class="text-sky-100 group-hover:text-white transition-colors">台中市大甲區</p>
+                </div>
+            </div>
+
+            <div class="mt-20 pt-8 border-t border-slate-600 text-slate-400 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
+                <p>&copy; <span id="year"></span> Hsu Pei Yun. All rights reserved.</p>
+                <div class="flex gap-4">
+                     <span class="hover:text-sky-300 transition-colors cursor-pointer">Privacy Policy</span>
+                     <span class="hover:text-sky-300 transition-colors cursor-pointer">Terms of Use</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JavaScript 邏輯 -->
+    <script>
+        // 初始化 Lucide Icons
+        lucide.createIcons();
+
+        // 設定年份
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // 導航與滾動邏輯
+        const navbar = document.getElementById('navbar');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section');
+
+        // 手機版選單切換
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenu.classList.contains('hidden') ? 'menu' : 'x';
+            // 重新渲染圖標 (這裡簡單處理，實際直接切換圖標)
+            mobileMenuBtn.innerHTML = `<i data-lucide="${icon}" class="w-6 h-6"></i>`;
+            lucide.createIcons();
+        });
+
+        // 平滑滾動至區塊
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                // 計算 header 高度 (64px)
+                const headerOffset = 64;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+
+                // 關閉手機選單
+                mobileMenu.classList.add('hidden');
+                mobileMenuBtn.innerHTML = `<i data-lucide="menu" class="w-6 h-6"></i>`;
+                lucide.createIcons();
+            }
+        }
+
+        // 滾動監聽 (Scroll Spy)
+        window.addEventListener('scroll', () => {
+            let current = '';
+            
+            // 判斷當前區塊
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            // 更新導航列狀態
+            navLinks.forEach(link => {
+                link.classList.remove('text-sky-600', 'border-b-2', 'border-sky-600');
+                link.classList.add('text-slate-500');
+                if (link.getAttribute('data-target') === current) {
+                    link.classList.remove('text-slate-500');
+                    link.classList.add('text-sky-600', 'border-b-2', 'border-sky-600');
+                }
+            });
+
+            // 導航列背景陰影效果
+            if (window.scrollY > 20) {
+                navbar.classList.add('shadow-md');
+            } else {
+                navbar.classList.remove('shadow-md');
+            }
+        });
+    </script>
+</body>
+</html>
